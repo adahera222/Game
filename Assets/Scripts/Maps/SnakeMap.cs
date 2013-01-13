@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 public class SnakeMap : IMap {
@@ -352,7 +353,66 @@ public class SnakeMap : IMap {
 		}
 		
 		return blocked;
-			
+	}
+	
+	/// <summary>
+	/// Ensures that the cell at the specified location is a valid cell for the player to occupy
+	/// </summary>
+	/// <returns>
+	/// if the specified cell is a valid locatio for the player to occupy it returns <c>true</c>, else it returns <c>false</c>;
+	/// </returns>
+	/// <param name='row'>
+	/// The row index of the map grid to check
+	/// </param>
+	/// <param name='col'>
+	/// The col index of the map grid to check
+	/// </param>
+	public bool ValidMapCell(int row, int col) {
+		return (map != null) &&
+			(row >= 0) && (row < NumRows) &&
+			(col >= 0) && (col < NumCols) &&
+			map[row, col] != null;
+	}
+	
+	/// <summary>
+	/// Places the item in random room in the dungeon
+	/// </summary>
+	/// <param name='item'>
+	/// Item to be placed
+	/// </param>
+	public void PlaceItemInRandomRoom(Transform item) {
+		//Randomly select a cell, by type
+		int rowIndex;
+		int colIndex;
+		if (GetRandomCell(CellType.EWHall, out rowIndex, out colIndex)) {
+			item.position = map[rowIndex, colIndex].transform.position;
+		}
+	}
+	
+	private bool GetRandomCell(CellType type, out int rowIndex, out int colIndex) {
+		IList<Vector2> validCells = new List<Vector2>();
+		
+		rowIndex = 0;
+		colIndex = 0;
+		
+		for (int row = 0; row < NumRows; row++) {
+			for (int col = 0; col < NumCols; col++) {
+				if (ValidMapCell(row, col)) {
+					if (CellHelper.GetCellType(map[row, col]) == type) {
+						validCells.Add (new Vector2((float)row, (float)col));
+					}
+				}
+			}
+		}
+		
+		if (validCells.Count > 0) {
+			int index = Random.Range (0, validCells.Count);
+			rowIndex = (int)validCells[index].x;
+			colIndex = (int)validCells[index].y;
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

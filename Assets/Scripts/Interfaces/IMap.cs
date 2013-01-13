@@ -10,4 +10,6 @@ public interface IMap {
 	void Reset();
 	CellType GetCellType(int row, int col);
 	GameObject GetStartCell(out int startRow, out int startCol);
+	void PlaceItemInRandomRoom(Transform item);
+	bool ValidMapCell(int row, int col);
 }

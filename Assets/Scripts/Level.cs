@@ -36,10 +36,8 @@ public class Level : ILevel {
 		Debug.Log (_map);
 	}
 	
-	public void CheckMovePath(Vector2 fromCell, Vector2 toCell) {
-	}
-	
 	public void PlaceQuestItem(GameObject item) {
+		_map.PlaceItemInRandomRoom(item.transform);
 	}
 	
 }

@@ -13,7 +13,7 @@ public class GridNavigator : INavigator {
 	{ 
 		get 
 		{
-			if (ValidMapCell (_currentRow, _currentCol) ) {
+			if (_map.ValidMapCell (_currentRow, _currentCol) ) {
 				return _map[_currentRow, _currentCol].transform.position;
 			} else {
 				return Vector3.zero;
@@ -96,25 +96,6 @@ public class GridNavigator : INavigator {
 		//rotate the current facing vector by the turn angle
 		_currentFacing = Quaternion.AngleAxis(turnAngle, _currentUpVector) * _currentFacing;
 	}
-			
-	/// <summary>
-	/// Ensures that the cell at the specified location is a valid cell for the player to occupy
-	/// </summary>
-	/// <returns>
-	/// if the specified cell is a valid locatio for the player to occupy it returns <c>true</c>, else it returns <c>false</c>;
-	/// </returns>
-	/// <param name='row'>
-	/// The row index of the map grid to check
-	/// </param>
-	/// <param name='col'>
-	/// The col index of the map grid to check
-	/// </param>
-	private bool ValidMapCell(int row, int col) {
-		return (_map != null) &&
-			(row >= 0) && (row < _map.NumRows) &&
-			(col >= 0) && (col < _map.NumCols) &&
-			_map[row, col] != null;
-	}
 	
 	/// <summary>
 	/// Gets the direction that the current character should be facing, based on currentFacing vector
@@ -174,7 +155,7 @@ public class GridNavigator : INavigator {
 		PredictMovement(facingDirection, moveDirection, out leaveDirection, out rowIndex, out colIndex);
 		
 		//make sure the new cell isn't off the map (out of range)
-		if (ValidMapCell(rowIndex, colIndex)) {
+		if (_map.ValidMapCell(rowIndex, colIndex)) {
 			//Now check to make sure there is a wall in the appropriate direction
 			CellType currentCellType = CellHelper.GetCellType(_map[_currentRow, _currentCol]);
 			if (!CellHelper.HasWallInDirection(currentCellType, leaveDirection)) {
