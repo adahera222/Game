@@ -288,72 +288,119 @@ public class SnakeMap : IMap {
 		//based on the direction, build a deadend
 		map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.EDeadEnd) : CreateCell(CellType.WDeadEnd);		
 		
-		//randomly select a row to attempt placing a room in 
-		int roomRow = Random.Range(0, rows - 1);
-		for (int roomCol = 0; roomCol < cols; roomCol ++) {
-			if (SpaceForRoom(Direction.North, roomRow, roomCol, 3, 3)) {
-				Debug.Log (string.Format ("Room to the North of {0, 1}", roomRow, roomCol));
-			} else if (SpaceForRoom(Direction.East, roomRow, roomCol, 3, 3)) {
-				Debug.Log (string.Format ("Room to the East of {0, 1}", roomRow, roomCol));
-			} else if (SpaceForRoom(Direction.South, roomRow, roomCol, 3, 3)) {
-				Debug.Log (string.Format ("Room to the South of {0, 1}", roomRow, roomCol));
-			} else if (SpaceForRoom(Direction.West, roomRow, roomCol, 3, 3)) {
-				Debug.Log (string.Format ("Room to the West of {0, 1}", roomRow, roomCol));
+		//attempt to randomly add rooms to the map
+		AddRooms();
+	}
+	
+	private void AddRooms() {
+		int numRooms = 6;
+		int countRooms = 0;
+		
+		IList<Vector2> spaces = new List<Vector2>();
+		
+		for (int row = 0; row < NumRows; row++) {
+			for (int col = 0; col < NumCols; col++) {
+				if (CellHelper.GetCellType(map[row, col]) == CellType.EWHall) {
+					spaces.Add (new Vector2(row, col));
+				}
+			}
+		}
+		
+		while ((countRooms < numRooms) && (spaces.Count > 0)) {
+			int index = Random.Range(0, spaces.Count);
+			Vector2 cellIndex = spaces[index];
+			spaces.RemoveAt(index);
+			if (SpaceForRoomToNorth((int)cellIndex.x, (int)cellIndex.y)) {
+				BuildRoomToNorth((int)cellIndex.x, (int)cellIndex.y);
+				countRooms++;
+			} else if (SpaceForRoomToSouth((int)cellIndex.x, (int)cellIndex.y)) {
+				BuildRoomToSouth((int)cellIndex.x, (int)cellIndex.y);
+				countRooms++;
 			}
 		}
 	}
 	
-	/// <summary>
-	/// Check to see if there is enough space for a 3x3 room, with a 1x1 entry point, from a specified cell in a specified direction
-	/// </summary>
-	private bool SpaceForRoom(Direction direction, int row, int col, int width, int height) {
-		//determine the row and col modifiers based on direction
-		Vector2 roomVector = new Vector2(0, 0);
-		Vector2 widthVector = new Vector2(0, 0);
+	private void BuildRoomToNorth(int row, int col) {
+		//change the current cell to a T intersection
+		Cell script = map[row, col].GetComponent<Cell>();
+		script.type = CellType.SWall;
 		
-		switch (direction) {
-		case Direction.North :
-			roomVector.x = -1;
-			widthVector.y = 1;
-			break;
-		case Direction.East :
-			roomVector.y = 1;
-			widthVector.x = 1;
-			break;
-		case Direction.South :
-			roomVector.x = 1;
-			widthVector.y = 1;
-			break;
-		case Direction.West :
-			roomVector.y = -1;
-			widthVector.x = 1;
-			break;
+		map[row - 1, col] = CreateCell(CellType.NSHall);
+		map[row - 2, col] = CreateCell (CellType.Empty);
+		map[row - 2, col - 1] = CreateCell (CellType.SWCorner);
+		map[row - 2, col + 1] = CreateCell (CellType.SECorner);
+		map[row - 3, col] = CreateCell (CellType.Empty);
+		map[row - 3, col - 1] = CreateCell (CellType.WWall);
+		map[row - 3, col + 1] = CreateCell (CellType.EWall);
+		map[row - 4, col] = CreateCell (CellType.NWall);
+		map[row - 4, col - 1] = CreateCell (CellType.NWCorner);
+		map[row - 4, col + 1] = CreateCell (CellType.NECorner);
+	}
+	
+	private void BuildRoomToSouth(int row, int col) {
+		//change the current cell to a T intersection
+		Cell script = map[row, col].GetComponent<Cell>();
+		script.type = CellType.NWall;
+		
+		map[row + 1, col] = CreateCell(CellType.NSHall);
+		map[row + 2, col] = CreateCell (CellType.Empty);
+		map[row + 2, col - 1] = CreateCell (CellType.NWCorner);
+		map[row + 2, col + 1] = CreateCell (CellType.NECorner);
+		map[row + 3, col] = CreateCell (CellType.Empty);
+		map[row + 3, col - 1] = CreateCell (CellType.WWall);
+		map[row + 3, col + 1] = CreateCell (CellType.EWall);
+		map[row + 4, col] = CreateCell (CellType.SWall);
+		map[row + 4, col - 1] = CreateCell (CellType.SWCorner);
+		map[row + 4, col + 1] = CreateCell (CellType.SECorner);
+	}	
+	
+	private bool SpaceForRoomToNorth(int row, int col) {
+		bool blocked = false;
+
+		//make sure we won't go out of bounds to build this room
+		if ((row - 4 < 0) || (col - 1 < 0) || (col + 1 > NumCols - 1)) {
+			blocked = true;
 		}
 		
-		Vector2 cursor = new Vector2(row, col);
+		if (!blocked) {
+			blocked = GetCellType(row - 1, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col + 1) != CellType.None ? true : blocked;
+		}
 		
+		return !blocked;
+	}
+	
+	private bool SpaceForRoomToSouth(int row, int col) {
 		bool blocked = false;
 		
-		for (int index = 1; index <= 4; index++) {
-			cursor += roomVector;
-			if (GetCellType((int)cursor.x, (int)cursor.y) != CellType.None) {
-				blocked = true;
-			}
-			
-			Vector2 posDepthVector = cursor + widthVector;
-			Vector2 negDepthvector = cursor + -widthVector;
-			
-			if (GetCellType((int)posDepthVector.x, (int)posDepthVector.y) != CellType.None) {
-				blocked = true;
-			}
-			
-			if (GetCellType((int)negDepthvector.x, (int)negDepthvector.y) != CellType.None) {
-				blocked = true;
-			}
+		//make sure we won't go out of bounds to build this room
+		if ((row + 4 > NumRows - 1) || (col - 1 < 0) || (col + 1 > NumCols - 1)) {
+			blocked = true;
+		}		
+		
+		if (!blocked) {
+			blocked = GetCellType(row + 1, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col + 1) != CellType.None ? true : blocked;
 		}
 		
-		return blocked;
-	}
+		return !blocked;
+	}	
 	
 	/// <summary>
 	/// Ensures that the cell at the specified location is a valid cell for the player to occupy
@@ -381,10 +428,12 @@ public class SnakeMap : IMap {
 	/// Item to be placed
 	/// </param>
 	public void PlaceItemInRandomRoom(Transform item) {
-		//Randomly select a cell, by type
 		int rowIndex;
 		int colIndex;
-		if (GetRandomCell(CellType.EWHall, out rowIndex, out colIndex)) {
+		//First look for an empty cell, which will be in a room, otherwise stick in a east west hallway
+		if (GetRandomCell(CellType.Empty, out rowIndex, out colIndex)) {
+			item.position = map[rowIndex, colIndex].transform.position;
+		} else if (GetRandomCell(CellType.EWHall, out rowIndex, out colIndex)) {
 			item.position = map[rowIndex, colIndex].transform.position;
 		}
 	}
