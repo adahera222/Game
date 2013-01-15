@@ -4,7 +4,6 @@ using System.Collections;
 public class GameManager : MonoBehaviour {
 	
 	public GameObject characterPrefab;
-	public GameObject objectPrefab;
 	
 	private ILevel GameLevel;
 	
@@ -16,10 +15,6 @@ public class GameManager : MonoBehaviour {
 	void OnGUI () {
     	if (GUI.Button (new Rect (10,10,75,25), "Generate")) {
 			GameLevel.GenerateNewLevel();
-		}
-    	if (GUI.Button (new Rect (95,10,75,25), "Item")) {
-			GameObject item = GameObject.Instantiate(objectPrefab) as GameObject;
-			GameLevel.PlaceQuestItem(item);
 		}		
 	}	
 
