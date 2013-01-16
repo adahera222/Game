@@ -157,7 +157,7 @@ public class GridNavigator : INavigator {
 		//make sure the new cell isn't off the map (out of range)
 		if (_map.ValidMapCell(rowIndex, colIndex)) {
 			//Now check to make sure there is a wall in the appropriate direction
-			CellType currentCellType = CellHelper.GetCellType(_map[_currentRow, _currentCol]);
+			CellType currentCellType = _map.GetCellType(_currentRow, _currentCol);
 			if (!CellHelper.HasWallInDirection(currentCellType, leaveDirection)) {
 				canMove = true;
 			}

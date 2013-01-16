@@ -86,26 +86,4 @@ public static class CellHelper {
 		return hasWall;
 	}
 	
-	/// <summary>
-	/// Accepts a game object that should have a Cell script attached to it. If it does,
-	/// it returns the type of cell stored in the script, otherwise it returns type None.
-	/// </summary>
-	/// <returns>
-	/// The cell type.
-	/// </returns>
-	/// <param name='cellGameObject'>
-	/// Cell game object.
-	/// </param>
-	public static CellType GetCellType(GameObject cellGameObject) {
-		CellType cellType = CellType.None;
-		if (cellGameObject != null )
-		{
-			Cell script = cellGameObject.GetComponent<Cell>();
-			if (script != null) {
-				cellType = script.type;
-			}
-		}
-		return cellType;
-	}
-	
 }
