@@ -1,21 +1,20 @@
-using UnityEngine;
-using System.Collections;
+#pragma strict
 
-public class GameManager : MonoBehaviour {
+public class GameManager extends MonoBehaviour {
+
+	public var characterPrefab: GameObject;
 	
-	public GameObject characterPrefab;
-	
-	private ILevel GameLevel;
+	private var GameLevel: ILevel;
 	
 	// Use this for initialization
-	void Start () {
+	function Start () {
 		GameLevel = new Level(new SnakeMap(), new StoneHallRenderer(), characterPrefab);
 	}
 	
-	void OnGUI () {
+	function OnGUI () {
     	if (GUI.Button (new Rect (10,10,75,25), "Generate")) {
 			GameLevel.GenerateNewLevel();
 		}		
-	}	
+	}
 
 }

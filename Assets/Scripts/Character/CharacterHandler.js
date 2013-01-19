@@ -1,49 +1,46 @@
-using UnityEngine;
-using System.Collections;
-
 public enum CameraStates {Locked, Returning, MouseLook};
 
-public class CharacterHandler : MonoBehaviour {
+public class CharacterHandler extends MonoBehaviour {
 	
 	//the map that this character is currently in
-	private IMap _map;
+	private var _map: IMap;
 	
-	private Vector3 targetPosition;
-	private Quaternion targetRotation;
-	private bool moving = false;
-	private bool turning = false;
+	private var targetPosition: Vector3;
+	private var targetRotation: Quaternion;
+	private var moving: boolean = false;
+	private var turning: boolean = false;
 	
-	private float rotationHorizontal;
-	private float rotationVertical;
-	private CameraStates cameraState = CameraStates.Locked;
-	private Transform characterCamera;
+	private var rotationHorizontal: float;
+	private var rotationVertical: float;
+	private var cameraState: CameraStates = CameraStates.Locked;
+	private var characterCamera: Transform;
 	
 	//modifiable properties
-	public float minSnapDistance = 0.05f; 
-	public float minSnapAngle = 0.5f;
-	public float moveSpeed = 0.125f;
-	public float turnRate = 12f;
-	public int sensitivityX = 5;
-	public int sensitivityY = 5;
-	public int maxLookLeft = 75; // degrees camera can "look" left (360 - maxLookLeft)
-	public int maxLookRight = 75; // degrees camera can "look" right (0 + maxLookRight)
-	public int maxLookUp = 45; // degrees camera can "look" up (0 + maxLookUp)
-	public int maxLookDown = 45; // degrees camera can "look" right (360 - maxLookDown)
+	public var minSnapDistance: float = 0.05f; 
+	public var minSnapAngle: float = 0.5f;
+	public var moveSpeed: float = 0.125f;
+	public var turnRate: float = 12f;
+	public var sensitivityX: int = 5;
+	public var sensitivityY: int = 5;
+	public var maxLookLeft: int = 75; // degrees camera can "look" left (360 - maxLookLeft)
+	public var maxLookRight: int = 75; // degrees camera can "look" right (0 + maxLookRight)
+	public var maxLookUp: int = 45; // degrees camera can "look" up (0 + maxLookUp)
+	public var maxLookDown: int = 45; // degrees camera can "look" right (360 - maxLookDown)
 	
-	public void PlaceInMap(IMap map) {
+	public function PlaceInMap(newMap: IMap) {
 		//store a reference to the map
-		_map = map;
+		_map = newMap;
 		//position this gameobject using the map's navigator
 		transform.position = _map.Navigator.CurrentPosition;
 		transform.rotation = Quaternion.LookRotation(_map.Navigator.CurrentFacing, _map.Navigator.CurrentUpVector);
 	}
 	
-	void Start () {
+	public function Start () {
 		characterCamera = transform.Find("Camera");
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public function Update () {
 		//don't do anything until a valid map is hooked to this handler
 		if ( _map == null ) { return; }
 		
@@ -54,7 +51,7 @@ public class CharacterHandler : MonoBehaviour {
 		if (moving) {
 			transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed);
 			//see if the movement is finished. If we are close enough to the target position, end the movement
-			float distanceLeftSqr = (targetPosition - transform.position).sqrMagnitude;
+			var distanceLeftSqr: float = (targetPosition - transform.position).sqrMagnitude;
 			if (distanceLeftSqr < minSnapDistance*minSnapDistance) {
 				transform.position = targetPosition;
 				moving = false;
@@ -67,7 +64,7 @@ public class CharacterHandler : MonoBehaviour {
 			//rotate towards the target rotation
 			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnRate);
 			//check to see if we're close enough to snap to the target rotation
-			float remainingTurnAngle = Quaternion.Angle(transform.rotation, targetRotation);
+			var remainingTurnAngle: float = Quaternion.Angle(transform.rotation, targetRotation);
 			if (remainingTurnAngle < minSnapAngle) 
 			{
 				transform.rotation = targetRotation;
@@ -109,7 +106,7 @@ public class CharacterHandler : MonoBehaviour {
 		}
 	}
 	
-	private void CheckMouseLook() {
+	private function CheckMouseLook() {
 		//check right mouse button
 		if(Input.GetKeyDown(KeyCode.Mouse1)) {
 			cameraState = CameraStates.MouseLook;
@@ -130,7 +127,7 @@ public class CharacterHandler : MonoBehaviour {
 		if (cameraState == CameraStates.Returning) {
 			characterCamera.rotation = Quaternion.Lerp (characterCamera.rotation, transform.rotation, Time.deltaTime * turnRate);
 		
-			float angle = Vector3.Angle(characterCamera.forward, transform.forward);
+			var angle: float = Vector3.Angle(characterCamera.forward, transform.forward);
 			if (angle < minSnapAngle) {
 				characterCamera.rotation = transform.rotation;
 				cameraState = CameraStates.Locked;
@@ -139,7 +136,7 @@ public class CharacterHandler : MonoBehaviour {
 	}
 	
 	//This method will position the camera based on how the mouse is moved
-	private void HandleMouseLook() {
+	private function HandleMouseLook() {
 		rotationHorizontal = characterCamera.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
 	
 		rotationVertical += Input.GetAxis("Mouse Y") * sensitivityY;
@@ -166,6 +163,6 @@ public class CharacterHandler : MonoBehaviour {
 				rotationVertical = maxLookDown*(-1);
 		}
 	
-		characterCamera.localEulerAngles = new Vector3(-rotationVertical, rotationHorizontal, 0);
+		characterCamera.localEulerAngles = Vector3(-rotationVertical, rotationHorizontal, 0);
 	}
 }

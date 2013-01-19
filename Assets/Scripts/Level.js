@@ -1,25 +1,23 @@
-using UnityEngine;
-using System.Collections;
-using System;
+#pragma strict
 
 /// <summary>
 /// Contains all of the information and methods for a random game level
 /// </summary>
-public class Level : ILevel {
+public class Level implements ILevel {
 	
-	private IMap _map;
-	private ILevelRenderer _levelRenderer;
+	private var _map: IMap;
+	private var _levelRenderer: ILevelRenderer;
 	
-	private GameObject _characterPrefab;
-	private GameObject _character;
+	private var _characterPrefab: GameObject;
+	private var _character: GameObject;
 
-	public Level(IMap map, ILevelRenderer render, GameObject characterPrefab) {
+	public function Level(map: IMap, render: ILevelRenderer, characterPrefab: GameObject) {
 		_map = map;
 		_levelRenderer = render;
 		_characterPrefab = characterPrefab;
 	}
 	
-	public void GenerateNewLevel() {
+	public function GenerateNewLevel() {
 		if (_character != null) {
 			GameObject.Destroy(_character);
 			_character = null;
@@ -30,13 +28,13 @@ public class Level : ILevel {
 		_levelRenderer.RenderMap(_map);
 		
 		_character = GameObject.Instantiate(_characterPrefab) as GameObject;
-		CharacterHandler script = _character.GetComponent<CharacterHandler>();
+		var script: CharacterHandler = _character.GetComponent(CharacterHandler);
 		script.PlaceInMap(_map);
 		
 		Debug.Log (_map);
 	}
 	
-	public void PlaceQuestItem(GameObject item) {
+	public function PlaceQuestItem(item: GameObject) {
 		_map.PlaceItemInRandomRoom(item.transform);
 	}
 	

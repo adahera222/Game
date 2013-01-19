@@ -1,5 +1,4 @@
-using UnityEngine;
-using System.Collections;
+#pragma strict
 
 public static class VectorHelper {
 	
@@ -15,15 +14,16 @@ public static class VectorHelper {
 	/// <param name='vectors'>
 	/// an array of vectors to check the target against
 	/// </param>
-	public static Vector3 GetClosestVector(Vector3 target, params Vector3[] vectors) {
+	public function GetClosestVector(target: Vector3, vectors: Vector3[]): Vector3 {
+	
 		//if no vectors were passed in, return the target
 		if (vectors.Length == 0) {
 			return target;
 		}
 		
 		//start with the first vector
-		Vector3 closestVector = vectors[0];
-		float smallestAngle = Vector3.Angle (target, closestVector);
+		var closestVector: Vector3 = vectors[0];
+		var smallestAngle: float = Vector3.Angle (target, closestVector);
 		
 		//if there is only one vector in the array, return it
 		if (vectors.Length == 1) {
@@ -31,8 +31,8 @@ public static class VectorHelper {
 		}
 		
 		//loop through the rest of the vectors
-		for (int i = 1; i < vectors.Length; i++) {
-			float angle = Vector3.Angle(target, vectors[i]);
+		for (var i: int = 1; i < vectors.Length; i++) {
+			var angle: int = Vector3.Angle(target, vectors[i]);
 			if (angle < smallestAngle) {
 				closestVector = vectors[i];
 				smallestAngle = angle;

@@ -1,12 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Character\CharacterHandler.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Navigators\GridNavigator.js">
     <Files>
-      <File FileName="Assets\Scripts\Character\CharacterHandler.cs" Line="153" Column="48" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="18" Column="4" />
-      <File FileName="Assets\Scripts\Maps\SnakeMap.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Level.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Interfaces\IMap.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Character\CharacterHandler.js" Line="3" Column="19" />
+      <File FileName="Assets\Scripts\Interfaces\ILevel.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Interfaces\ILevelRenderer.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Navigators\GridNavigator.js" Line="33" Column="32" />
+      <File FileName="Assets\Scripts\Maps\SnakeMap.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

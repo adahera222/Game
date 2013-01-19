@@ -44,19 +44,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Character\CharacterHandler.cs" />
-     <Compile Include="Assets\Scripts\DataObjects\Cell.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\Helpers\CellHelper.cs" />
-     <Compile Include="Assets\Scripts\Helpers\Direction.cs" />
-     <Compile Include="Assets\Scripts\Helpers\VectorHelper.cs" />
-     <Compile Include="Assets\Scripts\Interfaces\ILevel.cs" />
-     <Compile Include="Assets\Scripts\Interfaces\ILevelRenderer.cs" />
-     <Compile Include="Assets\Scripts\Interfaces\IMap.cs" />
-     <Compile Include="Assets\Scripts\Interfaces\INavigator.cs" />
-     <Compile Include="Assets\Scripts\Level.cs" />
-     <Compile Include="Assets\Scripts\Maps\SnakeMap.cs" />
-     <Compile Include="Assets\Scripts\Navigators\GridNavigator.cs" />
      <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
