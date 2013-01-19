@@ -1,0 +1,103 @@
+itemId:			1
+name:			key1
+description: 		This key unlocks the portal to level 2!!
+questId: 		1
+textureInventory:	Key1
+worldObject: 		KeyPrefab
+material:		matKey1
+x:			-4.5
+y:			0.13
+z:			-4.5
+action:			destroy
+itemType:		item
+[end item]
+
+itemId:			2
+name:			key2
+description: 		This key unlocks the portal to level 3!!
+questId: 		1
+textureInventory:	Key2
+worldObject: 		KeyPrefab
+material:		matKey2
+x:			-4.5
+y:			0.13
+z:			4.5
+action:			destroy
+itemType:		item
+[end item]
+
+itemId:			3
+name:			key3
+description: 		This key is worthless.
+textureInventory:	Key3
+worldObject: 		KeyPrefab
+material:		matKey3
+x:			-4.5
+y:			0.13
+z:			0
+action:			destroy
+itemType:		item
+[end item]
+
+itemId:			4
+name:			portal1
+description: 		This is the portal from level 1 to level 2.
+questId: 		1
+textureInventory:	Portal1
+worldObject: 		Portal
+material:		matPortal1
+x:			4.5
+y:			0.434
+z:			4.5
+action:			changeMaterial
+itemType:		door
+newMaterial:		matPortal1Open
+status:			locked
+requirement:		key1
+[end item]
+
+itemId:			5
+name:			portal2
+description: 		This is the portal from level 2 to level 3.
+questId: 		1
+textureInventory:	Portal2
+worldObject: 		Portal
+material:		matPortal2
+x:			4.5
+y:			0.434
+z:			2
+action:			changeMaterial
+itemType:		door
+newMaterial:		matPortal2Open
+status:			locked
+requirement:		key1
+[end item]
+
+itemId:			6
+name:			portal3
+description: 		This portal does not do anything.
+textureInventory:	Portal3
+worldObject: 		Portal
+material:		matPortal3
+x:			4.5
+y:			0.434
+z:			0
+action:			changeMaterial
+itemType:		door
+newMaterial:		matPortal3Open
+status:			locked
+requirement:		key3
+[end item]
+
+itemId:			7
+name:			relic
+description: 		If you picked this up, you finished quest 1!!
+questId: 		1
+textureInventory:	RelicInventoryTexture
+worldObject: 		Relic
+x:			0
+y:			0
+z:			5.5
+action:			destroy
+itemType:		item
+[end item]

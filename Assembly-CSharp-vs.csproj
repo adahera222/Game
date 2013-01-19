@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\Maps\SnakeMap.cs" />
      <Compile Include="Assets\Scripts\Navigators\GridNavigator.cs" />
      <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.cs" />
+     <None Include="Assets\DataFiles\Items.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
