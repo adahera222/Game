@@ -10,6 +10,12 @@ public class SnakeMap : IMap {
 	private INavigator _navigator;
 	private GameObject[,] map = new GameObject[0,0]; 
 	
+	/// <summary>
+	/// Returns this maps assigned navigator
+	/// </summary>
+	/// <value>
+	/// The navigator.
+	/// </value>
 	public INavigator Navigator 
 	{ 
 		get
@@ -70,13 +76,16 @@ public class SnakeMap : IMap {
 	/// Col.
 	/// </param>
 	public CellType GetCellType(int row, int col) {
-		if ((row < 0) || (row >= NumRows)) return CellType.None;
-		if ((col < 0) || (col >= NumCols)) return CellType.None;
+		CellType typeOfCell = CellType.None;
 		
-		if (map[row, col] == null) return CellType.None;
+		if (ValidMapCell(row, col)) {
+			Cell script = map[row, col].GetComponent<Cell>();
+			if (script != null) {
+				typeOfCell = script.type;
+			}
+		}
 		
-		Cell script = map[row, col].GetComponent<Cell>();
-		return script.type;
+		return typeOfCell;
 	}
 	
 	/// <summary>
@@ -300,7 +309,7 @@ public class SnakeMap : IMap {
 		
 		for (int row = 0; row < NumRows; row++) {
 			for (int col = 0; col < NumCols; col++) {
-				if (CellHelper.GetCellType(map[row, col]) == CellType.EWHall) {
+				if (GetCellType(row, col) == CellType.EWHall) {
 					spaces.Add (new Vector2(row, col));
 				}
 			}
@@ -447,7 +456,7 @@ public class SnakeMap : IMap {
 		for (int row = 0; row < NumRows; row++) {
 			for (int col = 0; col < NumCols; col++) {
 				if (ValidMapCell(row, col)) {
-					if (CellHelper.GetCellType(map[row, col]) == type) {
+					if (GetCellType(row, col) == type) {
 						validCells.Add (new Vector2((float)row, (float)col));
 					}
 				}
