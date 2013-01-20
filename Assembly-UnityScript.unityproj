@@ -54,11 +54,13 @@
      <Compile Include="Assets\Scripts\Interfaces\ILevelRenderer.js" />
      <Compile Include="Assets\Scripts\Interfaces\IMap.js" />
      <Compile Include="Assets\Scripts\Interfaces\INavigator.js" />
+     <Compile Include="Assets\Scripts\Inventory.js" />
      <Compile Include="Assets\Scripts\Items.js" />
      <Compile Include="Assets\Scripts\Level.js" />
      <Compile Include="Assets\Scripts\Maps\SnakeMap.js" />
      <Compile Include="Assets\Scripts\Navigators\GridNavigator.js" />
      <Compile Include="Assets\Scripts\QuestItem.js" />
+     <Compile Include="Assets\Scripts\QuestLog.js" />
      <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.js" />
      <None Include="Assets\DataFiles\Items.txt" />
      <None Include="Assets\Items.txt" />

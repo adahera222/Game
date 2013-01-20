@@ -30,6 +30,11 @@ public class CharacterHandler extends MonoBehaviour {
 	public var maxLookUp: int = 45; // degrees camera can "look" up (0 + maxLookUp)
 	public var maxLookDown: int = 45; // degrees camera can "look" right (360 - maxLookDown)
 	
+	public var hit : RaycastHit; // returns the object clicked on
+	private var scrQuestLog: QuestLog; // script reference
+	private var scrQuestItem: QuestItem;
+	private var scrInventory: Inventory;
+
 	public function PlaceInMap(newMap: IMap) {
 		//store a reference to the map
 		_map = newMap;
@@ -42,6 +47,8 @@ public class CharacterHandler extends MonoBehaviour {
 	
 	public function Start () {
 		characterCamera = transform.Find("Camera");
+		scrInventory = GameObject.Find("GameManager").GetComponent(Inventory);
+		scrQuestLog = GameObject.Find("GameManager").GetComponent(QuestLog);
 	}
 	
 	// Update is called once per frame
@@ -51,6 +58,9 @@ public class CharacterHandler extends MonoBehaviour {
 		
 		//check to see if the user is "Mouse" looking
 		CheckMouseLook();
+		
+		// see if the user clicked on the screen, and if so, if they clicked on an item
+		CheckMouseClick();
 		
 		//If the player is moving, handle the movement and don't accept keyboard input
 		if (moving) {
@@ -139,6 +149,81 @@ public class CharacterHandler extends MonoBehaviour {
 			}
 		}
 	}
+	
+	private function CheckMouseClick() {
+
+	    if(Input.GetKeyDown(KeyCode.Mouse0))
+	    {
+	    	// if they clicked on anything EXCEPT the ground, just get out
+	    	if(Physics.Raycast(characterCamera.camera.ScreenPointToRay(Input.mousePosition), hit))
+	    	{
+	    		// if whatever was clicked on does not have a script attached to it, ignore the click
+	    		if (hit.transform.gameObject.GetComponent(QuestItem) == null) {
+	    			return;
+	    		}
+	    			
+	    		if (hit.distance > 3)
+	    		{
+	    			scrQuestItem = hit.transform.gameObject.GetComponent(QuestItem);
+	    			Debug.Log("Too far away to pick up " + scrQuestItem.itemName + ".");
+	    		}
+	    		else
+	    		{
+		    		var tmpObject: GameObject = hit.transform.gameObject;
+		    		scrQuestItem = tmpObject.GetComponent(QuestItem);
+		    		// if its an item, add it to inventory
+		    		if (scrQuestItem.itemType == "item") {
+			    		AddToInventory(hit);
+			    	}
+			    	else if (scrQuestItem.itemType == "door")
+			    	{
+			    		// check if it is locked. If not, open it
+			    		if (scrQuestItem.status == "unlocked") {
+			    			tmpObject.renderer.material = Resources.Load(scrQuestItem.newMaterial) as Material;
+							scrQuestLog.EvaluateStatus(scrQuestItem.questId);
+			    		}
+			    		else {
+			    			// if we have the key, unlock and open the door
+			    			if (scrInventory.aryInventory.Contains(scrQuestItem.requirement))
+			    			{
+			    				scrQuestItem.status = "unlocked";
+								tmpObject.renderer.material = Resources.Load(scrQuestItem.newMaterial) as Material;
+								scrQuestLog.EvaluateStatus(scrQuestItem.questId);
+							}
+			    		}
+			    	} // end else if (scrQuestItem.itemType == "door")
+	    		}  // end else.  if (hit.distance > 2)
+			} // end if(Physics.Raycast(characterCamera.camera.ScreenPointToRay(Input.mousePosition), hit))
+		} // end if(Input.GetKeyDown(KeyCode.Mouse0))
+	}
+	
+	/*
+		If the object clicked is of type QuestItem.type == "inventory", this function is run.
+		Primary: It adds the QuestItem.itemName to the Inventory.aryInventory array.
+			Secondary: If it is flagged as QuestItem.action == "destroy", the world object is destroyed.
+			Secondary: Else if the QuestItem.action == "changeMaterial", it is modified, but left on screen.
+	*/
+	private function AddToInventory(hit: RaycastHit) {
+
+		var tmpObject = hit.collider.gameObject;
+		
+		if (tmpObject.tag == "quest") {
+			// get its QuestItem script
+			scrQuestItem = tmpObject.GetComponent(QuestItem);
+	
+			scrInventory.aryInventory.Add(scrQuestItem.itemName);
+			scrQuestLog.EvaluateStatus(scrQuestItem.questId);
+		}
+	
+		// take appropriate action
+		if (scrQuestItem.action == "destroy")
+			Destroy(tmpObject);
+		else if (scrQuestItem.action == "changeMaterial")
+		{
+			tmpObject.renderer.material = Resources.Load(scrQuestItem.newMaterial) as Material;
+		}
+	} // end function AddToInventory(hit: RaycastHit)
+	
 	
 	//This method will position the camera based on how the mouse is moved
 	private function HandleMouseLook() {
