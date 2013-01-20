@@ -44,13 +44,26 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Character\CharacterHandler.js" />
+     <Compile Include="Assets\Scripts\DataObjects\Cell.js" />
+     <Compile Include="Assets\Scripts\GameManager.js" />
+     <Compile Include="Assets\Scripts\Helpers\CellHelper.js" />
+     <Compile Include="Assets\Scripts\Helpers\Direction.js" />
+     <Compile Include="Assets\Scripts\Helpers\VectorHelper.js" />
+     <Compile Include="Assets\Scripts\Interfaces\ILevel.js" />
+     <Compile Include="Assets\Scripts\Interfaces\ILevelRenderer.js" />
+     <Compile Include="Assets\Scripts\Interfaces\IMap.js" />
+     <Compile Include="Assets\Scripts\Interfaces\INavigator.js" />
+     <Compile Include="Assets\Scripts\Inventory.js" />
      <Compile Include="Assets\Scripts\Items.js" />
+     <Compile Include="Assets\Scripts\Level.js" />
+     <Compile Include="Assets\Scripts\Maps\SnakeMap.js" />
+     <Compile Include="Assets\Scripts\Navigators\GridNavigator.js" />
      <Compile Include="Assets\Scripts\QuestItem.js" />
+     <Compile Include="Assets\Scripts\QuestLog.js" />
+     <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.js" />
      <None Include="Assets\DataFiles\Items.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{D8888F6A-ABE1-C49B-1A38-F65A81021668}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+     <None Include="Assets\Items.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
