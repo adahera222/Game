@@ -1,11 +1,10 @@
 #pragma strict
 
 public interface IMap {
-	function get NumRows(): int;
-	function get Navigator(): INavigator;
-	
-	function get NumCols(): int;
-	function Map(row: int, col: int): GameObject 
+	function Navigator(): INavigator;
+	function NumRows(): int;
+	function NumCols(): int;
+	function Map(row: int, col: int): GameObject;
 	function Generate();
 	function Reset();
 	function GetCellType(row: int, col: int): CellType;

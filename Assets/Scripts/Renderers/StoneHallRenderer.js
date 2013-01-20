@@ -1,6 +1,8 @@
+#pragma strict
+
 public class StoneHallRenderer implements ILevelRenderer {
 	
-	private static var TEXTURE_NAME: String = "Textures/StoneHall";
+	private var TEXTURE_NAME: String = "Textures/StoneHall";
 	
 	private var textureAtlas: Texture2D;
 	private var length: float = 1.0f;
@@ -17,15 +19,15 @@ public class StoneHallRenderer implements ILevelRenderer {
 	public function StoneHallRenderer() {
 		//create the material that each cell will use
 		mat = new Material(Shader.Find ("Diffuse"));
-		mat.mainTexture = Resources.Load (TEXTURE_NAME);
+		mat.mainTexture = Resources.Load (TEXTURE_NAME) as Texture2D;
 	}
 	
 	public function RenderMap(map: IMap) {
 		var startingPoint: Vector3 = Vector3.zero;
 		var zOffset: int = 0;
-		for (var row: int = 0; row < map.NumRows; row++) {
-			zOffset = map.NumRows - (row + 1); //flips the dugeon map array row indexes to match the zero in the lower left corner of the grid system
-			for (var col: int = 0; col < map.NumCols; col++) {
+		for (var row: int = 0; row < map.NumRows(); row++) {
+			zOffset = map.NumRows() - (row + 1); //flips the dugeon map array row indexes to match the zero in the lower left corner of the grid system
+			for (var col: int = 0; col < map.NumCols(); col++) {
 				if (map.Map(row, col) != null) {
 					
 					//determine where this cell will be placed
@@ -47,8 +49,8 @@ public class StoneHallRenderer implements ILevelRenderer {
 					map.Map(row, col).transform.rotation = Quaternion.identity;
 		
 					//add the mesh components to the game object
-					map.Map(row, col).AddComponent(MeshRenderer);
-					var mf: MeshFilter = map.Map(row, col).AddComponent(MeshFilter);
+					map.Map(row, col).AddComponent.<MeshRenderer>();
+					var mf: MeshFilter = map.Map(row, col).AddComponent.<MeshFilter>();
 					var mesh: Mesh = new Mesh();
 					mf.mesh = mesh;
 
@@ -112,12 +114,6 @@ public class StoneHallRenderer implements ILevelRenderer {
 	/// <param name='cell'>
 	/// This transform must be positioned at what will be the center of the cell and facing forward. It is used to 
 	/// determine the position of the sides vertices.
-	/// </param>
-	/// <param name='verticeIndex'>
-	/// This indicates the index to begin storing vertices in the appropriate mesh arrays
-	/// </param>
-	/// <param name='trianglesIndex'>
-	/// Similar to verticeIndex, this index tracks to the first empty spot in the mesh triangles array
 	/// </param>
 	private function BuildCellSide(direction: Direction, cell: Transform) {
 		//store this cell's starting vertex index

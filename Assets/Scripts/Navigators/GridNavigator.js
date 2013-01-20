@@ -8,7 +8,7 @@ public class GridNavigator implements INavigator {
 	private var _currentFacing: Vector3;
 	private var _currentUpVector: Vector3;
 	
-	public function get CurrentPosition(): Vector3 {
+	public function CurrentPosition(): Vector3 {
 		if (_map.ValidMapCell (_currentRow, _currentCol) ) {
 			return _map.Map(_currentRow, _currentCol).transform.position;
 		} else {
@@ -16,11 +16,11 @@ public class GridNavigator implements INavigator {
 		}
 	}
 	
-	public function get CurrentFacing(): Vector3 {
+	public function CurrentFacing(): Vector3 {
 		return _currentFacing;
 	}
 	
-	public function get CurrentUpVector(): Vector3 {
+	public function CurrentUpVector(): Vector3 {
 		return _currentUpVector;
 	}
 	

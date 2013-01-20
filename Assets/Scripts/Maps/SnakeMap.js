@@ -1,3 +1,5 @@
+#pragma strict
+
 import System.Collections.Generic;
 import System.Text;
 
@@ -10,24 +12,24 @@ public class SnakeMap implements IMap {
 	private var _map = new GameObject[0,0]; 
 	
 	/// <summary>
-	/// Gets the number rows.
-	/// </summary>
-	/// <value>
-	/// The number rows.
-	/// </value>
-	public function get NumRows(): int {
-		return _map.GetLength(0);
-	}	
-	
-	/// <summary>
 	/// Returns this maps assigned navigator
 	/// </summary>
 	/// <value>
 	/// The navigator.
 	/// </value>
-	public function get Navigator() : INavigator {
+	public function Navigator() : INavigator {
 		return _navigator;
-	}
+	}	
+	
+	/// <summary>
+	/// Gets the number rows.
+	/// </summary>
+	/// <value>
+	/// The number rows.
+	/// </value>
+	public function NumRows(): int {
+		return _map.GetLength(0);
+	}	
 	
 	/// <summary>
 	/// Gets the number cols.
@@ -35,7 +37,7 @@ public class SnakeMap implements IMap {
 	/// <value>
 	/// The number cols.
 	/// </value>
-	function get NumCols(): int {
+	function NumCols(): int {
 		return _map.GetLength(1);
 	}	
 	
@@ -68,7 +70,7 @@ public class SnakeMap implements IMap {
 		var typeOfCell: CellType = CellType.None;
 		
 		if (ValidMapCell(row, col)) {
-			var script: Cell = _map[row, col].GetComponent(Cell);
+			var script: Cell = _map[row, col].GetComponent.<Cell>();
 			if (script != null) {
 				typeOfCell = script.type;
 			}
@@ -86,10 +88,10 @@ public class SnakeMap implements IMap {
 	public function GetStartCellIndex(): CellIndex {
 		var index: CellIndex = new CellIndex(0, 0);
 		
-		for (var row: int = 0; row < _map.GetLength(0); row++) {
-			for (var col: int = 0; col < _map.GetLength(1); col++) {
+		for (var row: int = 0; row < NumRows(); row++) {
+			for (var col: int = 0; col < NumCols(); col++) {
 				if (_map[row,col] != null) {
-					var script: Cell = _map[row,col].GetComponent(Cell);
+					var script: Cell = _map[row,col].GetComponent.<Cell>();
 					if (script.start) {
 						index.Row = row;
 						index.Col = col;
@@ -105,8 +107,8 @@ public class SnakeMap implements IMap {
 	/// Destroys all current cell game objects and resets the map array to be 0,0 size
 	/// </summary>
 	public function Reset() {
-		for (var row: int = 0; row < _map.GetLength(0); row++) {
-			for (var col: int = 0; col < _map.GetLength(1); col++) {
+		for (var row: int = 0; row < NumRows(); row++) {
+			for (var col: int = 0; col < NumCols(); col++) {
 				if (_map[row,col] != null) {
 					GameObject.Destroy(_map[row,col]);
 					_map[row,col] = null;
@@ -129,7 +131,7 @@ public class SnakeMap implements IMap {
 	/// </param>
 	private function CreateCell(type: CellType, isStart: boolean): GameObject {
 		var obj: GameObject = new GameObject();
-		var script: Cell = obj.AddComponent(Cell);
+		var script: Cell = obj.AddComponent.<Cell>();
 		script.type = type;
 		script.start = isStart;
 		return obj;
@@ -158,16 +160,16 @@ public class SnakeMap implements IMap {
 	public override function ToString(): String {
 		var text: StringBuilder = new StringBuilder();
 		
-		text.AppendFormat("Rows: {0}", NumRows).AppendLine();
-		text.AppendFormat("Cols: {0}", NumCols).AppendLine();
+		text.AppendFormat("Rows: {0}", NumRows()).AppendLine();
+		text.AppendFormat("Cols: {0}", NumCols()).AppendLine();
 		
-		for (var row: int = 0; row < _map.GetLength(0); row++) {
+		for (var row: int = 0; row < NumRows(); row++) {
 			text.Append("[");
-			for (var col: int = 0; col < _map.GetLength(1); col++) {
+			for (var col: int = 0; col < NumCols(); col++) {
 				var cell: GameObject = _map[row,col];
 				var cellType: CellType = CellType.None;
 				if (cell != null) {
-					var script: Cell = cell.GetComponent(Cell);
+					var script: Cell = cell.GetComponent.<Cell>();
 					cellType = script.type;
 				};
 			    text.AppendFormat(" {0,4} ", cellType);
@@ -308,8 +310,8 @@ public class SnakeMap implements IMap {
 		
 		var spaces: List.<CellIndex> = new List.<CellIndex>();
 		
-		for (var row: int = 0; row < _map.GetLength(0); row++) {
-			for (var col: int = 0; col < _map.GetLength(1); col++) {
+		for (var row: int = 0; row < NumRows(); row++) {
+			for (var col: int = 0; col < NumCols(); col++) {
 				if (GetCellType(row, col) == CellType.EWHall) {
 					spaces.Add (new CellIndex(row, col));
 				}
@@ -332,7 +334,7 @@ public class SnakeMap implements IMap {
 	
 	private function BuildRoomToNorth(row: int, col: int) {
 		//change the current cell to a T intersection
-		var script: Cell = _map[row, col].GetComponent(Cell);
+		var script: Cell = _map[row, col].GetComponent.<Cell>();
 		script.type = CellType.SWall;
 		
 		_map[row - 1, col] = CreateCell(CellType.NSHall);
@@ -349,7 +351,7 @@ public class SnakeMap implements IMap {
 	
 	private function BuildRoomToSouth(row: int, col: int) {
 		//change the current cell to a T intersection
-		var script: Cell = _map[row, col].GetComponent(Cell);
+		var script: Cell = _map[row, col].GetComponent.<Cell>();
 		script.type = CellType.NWall;
 		
 		_map[row + 1, col] = CreateCell(CellType.NSHall);
@@ -368,7 +370,7 @@ public class SnakeMap implements IMap {
 		var blocked: boolean = false;
 
 		//make sure we won't go out of bounds to build this room
-		if ((row - 4 < 0) || (col - 1 < 0) || (col + 1 > NumCols - 1)) {
+		if ((row - 4 < 0) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
 			blocked = true;
 		}
 		
@@ -392,7 +394,7 @@ public class SnakeMap implements IMap {
 		var blocked: boolean = false;
 		
 		//make sure we won't go out of bounds to build this room
-		if ((row + 4 > NumRows - 1) || (col - 1 < 0) || (col + 1 > NumCols - 1)) {
+		if ((row + 4 > NumRows() - 1) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
 			blocked = true;
 		}		
 		
@@ -426,8 +428,8 @@ public class SnakeMap implements IMap {
 	/// </param>
 	public function ValidMapCell(row: int, col: int): boolean {
 		return (_map != null) &&
-			(row >= 0) && (row < _map.GetLength(0)) &&
-			(col >= 0) && (col < _map.GetLength(1)) &&
+			(row >= 0) && (row < NumRows()) &&
+			(col >= 0) && (col < NumCols()) &&
 			_map[row, col] != null;
 	}
 	
@@ -456,8 +458,8 @@ public class SnakeMap implements IMap {
 		
 		var index = new FlaggableCellIndex(-1, -1, false);
 				
-		for (var row: int = 0; row < _map.GetLength(0); row++) {
-			for (var col: int = 0; col < _map.GetLength(1); col++) {
+		for (var row: int = 0; row < NumRows(); row++) {
+			for (var col: int = 0; col < NumCols(); col++) {
 				if (ValidMapCell(row, col)) {
 					if (GetCellType(row, col) == type) {
 						validCells.Add (new CellIndex(row, col));

@@ -1,9 +1,12 @@
+#pragma strict
+
 public enum CameraStates {Locked, Returning, MouseLook};
 
 public class CharacterHandler extends MonoBehaviour {
 	
 	//the map that this character is currently in
 	private var _map: IMap;
+	private var _navigator: INavigator;
 	
 	private var targetPosition: Vector3;
 	private var targetRotation: Quaternion;
@@ -30,9 +33,11 @@ public class CharacterHandler extends MonoBehaviour {
 	public function PlaceInMap(newMap: IMap) {
 		//store a reference to the map
 		_map = newMap;
+		//grab the navigator off the map
+		_navigator = _map.Navigator();
 		//position this gameobject using the map's navigator
-		transform.position = _map.Navigator.CurrentPosition;
-		transform.rotation = Quaternion.LookRotation(_map.Navigator.CurrentFacing, _map.Navigator.CurrentUpVector);
+		transform.position = _navigator.CurrentPosition();
+		transform.rotation = Quaternion.LookRotation(_navigator.CurrentFacing(), _navigator.CurrentUpVector());
 	}
 	
 	public function Start () {
@@ -76,32 +81,32 @@ public class CharacterHandler extends MonoBehaviour {
 		
 		//Handle Keyboard input
 		if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
-			if (_map.Navigator.Move(Direction.Forward)) {
-				targetPosition = _map.Navigator.CurrentPosition;
+			if (_navigator.Move(Direction.Forward)) {
+				targetPosition = _navigator.CurrentPosition();
 				moving = true;
 			}
 		} else if(Input.GetKey(KeyCode.E)) {
-			if (_map.Navigator.Move(Direction.Right)) {
-				targetPosition = _map.Navigator.CurrentPosition;
+			if (_navigator.Move(Direction.Right)) {
+				targetPosition = _navigator.CurrentPosition();
 				moving = true;
 			}
 		} else if(Input.GetKey (KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
-			if (_map.Navigator.Move (Direction.Backward)) {
-				targetPosition = _map.Navigator.CurrentPosition;
+			if (_navigator.Move (Direction.Backward)) {
+				targetPosition = _navigator.CurrentPosition();
 				moving = true;
 			}
 		} else if(Input.GetKey(KeyCode.Q)) {
-			if (_map.Navigator.Move (Direction.Left)) {
-				targetPosition = _map.Navigator.CurrentPosition;
+			if (_navigator.Move (Direction.Left)) {
+				targetPosition = _navigator.CurrentPosition();
 				moving = true;
 			}
 		} else if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-			_map.Navigator.Turn (Direction.Left);
-			targetRotation = Quaternion.LookRotation(_map.Navigator.CurrentFacing, _map.Navigator.CurrentUpVector);
+			_navigator.Turn (Direction.Left);
+			targetRotation = Quaternion.LookRotation(_navigator.CurrentFacing(), _navigator.CurrentUpVector());
 			turning = true;
 		} else if(Input.GetKey (KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-			_map.Navigator.Turn (Direction.Right);
-			targetRotation = Quaternion.LookRotation(_map.Navigator.CurrentFacing, _map.Navigator.CurrentUpVector);
+			_navigator.Turn (Direction.Right);
+			targetRotation = Quaternion.LookRotation(_navigator.CurrentFacing(), _navigator.CurrentUpVector());
 			turning = true;
 		}
 	}
