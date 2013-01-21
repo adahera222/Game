@@ -33,7 +33,7 @@ public class CharacterHandler extends MonoBehaviour {
 	public var hit : RaycastHit; // returns the object clicked on
 	private var scrQuestLog: QuestLog; // script reference
 	private var scrQuestItem: QuestItem;
-	private var scrInventory: Inventory;
+	private var scrInventoryManager: InventoryManager;
 
 	public function PlaceInMap(newMap: IMap) {
 		//store a reference to the map
@@ -47,7 +47,7 @@ public class CharacterHandler extends MonoBehaviour {
 	
 	public function Start () {
 		characterCamera = transform.Find("Camera");
-		scrInventory = GameObject.Find("GameManager").GetComponent(Inventory);
+		scrInventoryManager = GameObject.Find("GameManager").GetComponent(InventoryManager);
 		scrQuestLog = GameObject.Find("GameManager").GetComponent(QuestLog);
 	}
 	
@@ -88,6 +88,18 @@ public class CharacterHandler extends MonoBehaviour {
 			return;
 		}
 
+		// Pressing L opens/closes the Quest Log
+		if (Input.GetKeyUp(KeyCode.L))
+		{
+			scrQuestLog.showQuestLog = !scrQuestLog.showQuestLog;
+		}
+		// Pressing I opens/closes the Inventory
+		if (Input.GetKeyUp(KeyCode.I))
+		{
+			// set the GUI variable to match		
+			scrInventoryManager.showInventory = !scrInventoryManager.showInventory;
+		}
+	
 		
 		//Handle Keyboard input
 		if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
@@ -173,7 +185,7 @@ public class CharacterHandler extends MonoBehaviour {
 		    		scrQuestItem = tmpObject.GetComponent(QuestItem);
 		    		// if its an item, add it to inventory
 		    		if (scrQuestItem.itemType == "item") {
-			    		AddToInventory(hit);
+			    		scrInventoryManager.Inventory.AddToInventory(hit);
 			    	}
 			    	else if (scrQuestItem.itemType == "door")
 			    	{
@@ -184,7 +196,7 @@ public class CharacterHandler extends MonoBehaviour {
 			    		}
 			    		else {
 			    			// if we have the key, unlock and open the door
-			    			if (scrInventory.aryInventory.Contains(scrQuestItem.requirement))
+			    			if (scrInventoryManager.Inventory.aryInventory.Contains(scrQuestItem.requirement))
 			    			{
 			    				scrQuestItem.status = "unlocked";
 								tmpObject.renderer.material = Resources.Load(scrQuestItem.newMaterial) as Material;
@@ -196,34 +208,6 @@ public class CharacterHandler extends MonoBehaviour {
 			} // end if(Physics.Raycast(characterCamera.camera.ScreenPointToRay(Input.mousePosition), hit))
 		} // end if(Input.GetKeyDown(KeyCode.Mouse0))
 	}
-	
-	/*
-		If the object clicked is of type QuestItem.type == "inventory", this function is run.
-		Primary: It adds the QuestItem.itemName to the Inventory.aryInventory array.
-			Secondary: If it is flagged as QuestItem.action == "destroy", the world object is destroyed.
-			Secondary: Else if the QuestItem.action == "changeMaterial", it is modified, but left on screen.
-	*/
-	private function AddToInventory(hit: RaycastHit) {
-
-		var tmpObject = hit.collider.gameObject;
-		
-		if (tmpObject.tag == "quest") {
-			// get its QuestItem script
-			scrQuestItem = tmpObject.GetComponent(QuestItem);
-	
-			scrInventory.aryInventory.Add(scrQuestItem.itemName);
-			scrQuestLog.EvaluateStatus(scrQuestItem.questId);
-		}
-	
-		// take appropriate action
-		if (scrQuestItem.action == "destroy")
-			Destroy(tmpObject);
-		else if (scrQuestItem.action == "changeMaterial")
-		{
-			tmpObject.renderer.material = Resources.Load(scrQuestItem.newMaterial) as Material;
-		}
-	} // end function AddToInventory(hit: RaycastHit)
-	
 	
 	//This method will position the camera based on how the mouse is moved
 	private function HandleMouseLook() {

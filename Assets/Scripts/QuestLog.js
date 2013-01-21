@@ -12,18 +12,6 @@ var scrollPosition : Vector2; // The variable to control where the scrollview 'l
 
 static var showQuestLog: boolean = false;
 
-class ExtendedArray extends Array{
-	// move to a helper function file or extend Array ================================================================
-	function Contains(needle: String) {
-		for (var arrayValue: String in this) {
-			if (arrayValue == needle)
-				return true;
-		}
-		
-		return false;
-	} // end function InInventory(needle: string, haystack: Array)
-}
-
 /*
 	Used to clsQuest to define the individual steps that make up the quest.
 */
@@ -76,9 +64,12 @@ class clsQuest {
 			var allConditionsMet: boolean = true;
 			for (var condition: Array in conditions) {
 				if (condition[0] == "inventory") {
-					var scrInventory: Inventory = GameObject.Find("GameManager").GetComponent(Inventory);
-
-					if (!scrInventory.aryInventory.Contains(condition[1]))
+					var scrInventory: InventoryManager = GameObject.Find("GameManager").GetComponent(InventoryManager);
+//Debug.Log(condition);
+//Debug.Log(scrInventory);
+//Debug.Log(scrInventory.Inventory);
+//Debug.Log(scrInventory.Inventory.aryInventory);
+					if (!scrInventory.Inventory.aryInventory.Contains(condition[1]))
 					{
 						allConditionsMet = false;
 					}

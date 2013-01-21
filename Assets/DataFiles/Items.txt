@@ -70,7 +70,7 @@ action:			changeMaterial
 itemType:		door
 newMaterial:		matPortal2Open
 status:			locked
-requirement:		key1
+requirement:		key2
 [end item]
 
 itemId:			6
@@ -93,7 +93,7 @@ itemId:			7
 name:			relic
 description: 		If you picked this up, you finished quest 1!!
 questId: 		1
-textureInventory:	RelicInventoryTexture
+textureInventory:	Relic
 worldObject: 		Relic
 x:			0
 y:			0
