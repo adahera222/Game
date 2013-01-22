@@ -44,6 +44,8 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Necromancer GUI\GUITestScript.js" />
+     <Compile Include="Assets\Necromancer GUI\NecromancerGUIScript.js" />
      <Compile Include="Assets\Scripts\Character\CharacterHandler.js" />
      <Compile Include="Assets\Scripts\DataObjects\Cell.js" />
      <Compile Include="Assets\Scripts\GameManager.js" />
@@ -55,6 +57,7 @@
      <Compile Include="Assets\Scripts\Interfaces\IMap.js" />
      <Compile Include="Assets\Scripts\Interfaces\INavigator.js" />
      <Compile Include="Assets\Scripts\Inventory.js" />
+     <Compile Include="Assets\Scripts\InventoryManager.js" />
      <Compile Include="Assets\Scripts\Items.js" />
      <Compile Include="Assets\Scripts\Level.js" />
      <Compile Include="Assets\Scripts\Maps\SnakeMap.js" />
@@ -63,6 +66,8 @@
      <Compile Include="Assets\Scripts\QuestLog.js" />
      <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.js" />
      <None Include="Assets\DataFiles\Items.txt" />
+     <None Include="Assets\Necromancer GUI\Kingthings.txt" />
+     <None Include="Assets\Necromancer GUI\Readme.txt" />
      <None Include="Assets\Items.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

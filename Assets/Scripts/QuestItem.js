@@ -11,6 +11,12 @@ the clone is instantiated, a blank script exists, but the values have to be set.
 public var questId: int;
 
 /*
+	item id from the text file - links into Items.aryItems list so you can get 
+		everything about the item
+*/
+public var itemId: int;
+
+/*
 	Unique name of item. Mainly so other steps can know if it has been dealt with appropriately
 */
 public var itemName: String;

@@ -18,7 +18,7 @@ var scrQuest: QuestItem; // script reference
 
 var characterPrefab: GameObject;
 private var GameLevel: ILevel;
-	
+var missingInventoryTexture: Texture2D;	
 
 /* This class defines everything there is to know about an item in the world.
 	There is a master List of items = new List<clsItem>(). 
@@ -84,6 +84,7 @@ function LoadItems () {
 	aryQuestItems = GetQuestItems(1);
 	for (var item: clsItem in aryQuestItems) {
 		newQuestItem = Instantiate(item.worldObject, Vector3(item.x, item.y, item.z), Quaternion.identity);
+		
 		GameLevel.PlaceQuestItem(newQuestItem.gameObject);
 		// set the material appropriately
 		if (item.worldObject.renderer && item.material != null)
@@ -91,6 +92,7 @@ function LoadItems () {
 		// set the script QuestItem.questId and QuestItem.itemName
 		scrQuest = newQuestItem.GetComponent(QuestItem);
 		scrQuest.questId = item.questId;
+		scrQuest.itemId = item.itemId;
 		scrQuest.itemName = item.name;
 		scrQuest.action = item.action;
 		scrQuest.itemType = item.itemType;
@@ -133,6 +135,7 @@ function Start () {
 	// create a single item
 	var item = new clsItem();
 	
+	missingInventoryTexture = UnityEngine.Resources.Load("MissingInventoryTexture") as Texture2D;
 	GameLevel = new Level(new SnakeMap(), new StoneHallRenderer(), characterPrefab);
 
 	// now load all the items from a file
@@ -302,4 +305,13 @@ function GetQuestItems(questId: int) {
 		}
 	}
 	return aryReturnItems;
+} // end function GetQuestItems(questId: int)
+
+function GetItemById(itemId: int) {
+	for (var item: clsItem in aryItems) {
+		if (item.itemId == itemId) {
+			return item;
+		}
+	}
+	return null;
 } // end function GetQuestItems(questId: int)
