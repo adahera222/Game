@@ -18,7 +18,7 @@ var windowInventoryContextMenu: Rect = Rect (200, 200, 200, 200); // rect for th
 var inventorySlotStyle: GUIStyle; // defines width/height for inv slot
 
 var contextInventoryIndex : int; // inventory  slot the context menu is open for
-var empty : Texture; // empty inventory slot texture
+var empty : Texture2D; // empty inventory slot texture
 
 var inventoryContextMenuWindowID : int = 4; // window ID of the inventory context menu window
 
@@ -42,11 +42,11 @@ function Start () {
 	menuWindowWidth = 200;
 	menuWindowHeight = 500;
 	windowRect = Rect (menuWindowX, menuWindowY, menuWindowWidth, menuWindowHeight);
-	refNecromancerGUIScript = GetComponent("NecromancerGUIScript");
+	refNecromancerGUIScript = GetComponent(NecromancerGUIScript);
 	inventorySlotStyle.fixedWidth = 32;
 	inventorySlotStyle.fixedHeight = 32;
 	
-	empty = Resources.Load("EmptyInventorySlot") as Texture;
+	empty = Resources.Load("EmptyInventorySlot") as Texture2D;
 
 	// instructions window init	
 	ScreenX = Screen.width - 250;

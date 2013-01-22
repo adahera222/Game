@@ -199,16 +199,16 @@ function Start () {
 					}				
 					// just textures, so we can load those from strings ok
 					if (aryItemValues["textureInventory"] != null)
-						item.textureInventory = UnityEngine.Resources.Load(aryItemValues["textureInventory"]) as Texture2D;
+						item.textureInventory = UnityEngine.Resources.Load(aryItemValues["textureInventory"].ToString()) as Texture2D;
 					if (aryItemValues["textureEquipped"] != null)
-						item.textureEquipped = UnityEngine.Resources.Load(aryItemValues["textureEquipped"]) as Texture2D;
+						item.textureEquipped = UnityEngine.Resources.Load(aryItemValues["textureEquipped"].ToString()) as Texture2D;
 						
 					// this  is just a string name of the prefab to instantiate
 					if (aryItemValues["worldObject"] != null) {
-						item.worldObject = UnityEngine.Resources.Load("Prefabs/" + aryItemValues["worldObject"], Transform);
+						item.worldObject = UnityEngine.Resources.Load("Prefabs/" + aryItemValues["worldObject"].ToString(), Transform);
 					}
 					if (aryItemValues["material"] != null) {
-						item.material = UnityEngine.Resources.Load(aryItemValues["material"]) as Material;
+						item.material = UnityEngine.Resources.Load(aryItemValues["material"].ToString()) as Material;
 					}
 					if (aryItemValues["x"] != null) {
 						item.x = parseFloat(aryItemValues["x"] as String);

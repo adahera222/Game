@@ -44,8 +44,11 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.cs" />
+     <Compile Include="Assets\Scripts\Helpers\NewBehaviourScript.cs" />
      <None Include="Assets\DataFiles\Items.txt" />
+     <None Include="Assets\Necromancer GUI\Kingthings.txt" />
+     <None Include="Assets\Necromancer GUI\Readme.txt" />
+     <None Include="Assets\Items.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
