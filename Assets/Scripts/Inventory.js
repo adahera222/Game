@@ -10,24 +10,27 @@ class ExtendedArray extends Array{
 		}
 		
 		return false;
-	} // end function InInventory(needle: string, haystack: Array)
+	} // end function Contains(needle: String)
 }
 
 
 class clsInventory {
-	var item = new List.<clsItem>();
 	var count: int; // quantity of this item in inventory
-	
-	// TODO: are both needed or did aryInventoryImages replace aryInventory?
-	var aryInventory = new ExtendedArray();
+
+	var item = new List.<clsItem>(); // not used. Should replace aryInventory as it gives more info.
+	var aryInventory = new ExtendedArray(); //used to determine if items are in the inventory.
 	var aryInventoryImages = new List.<Texture2D>();
+
 	var missingInventoryTexture: Texture2D; // placeholder texture for missing images
+	var empty : Texture2D; // empty inventory slot texture
+
 	var maxInventorySize : int = 10; // max inventory slots available
 	var inventoryItemCount : int = 0; // keeps track of how many items are in the inventory
 	
 	// constructor
-	function clsInventory() {
-		
+	function clsInventory(empty) {
+		this.empty = empty;
+		InitializeInventory();
 	}
 	
 	/*
@@ -112,16 +115,9 @@ class clsInventory {
 	
 	function InitializeInventory() {
 		// manually set the entire array to empty slots
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
-		aryInventoryImages.Add(Resources.Load("EmptyInventorySlot") as Texture);
+		for(var ind: int = 1; ind<= this.maxInventorySize; ind++) {
+			aryInventoryImages.Add(empty);
+		}
 	} // end function InitializeInventory()
 	
 }; // end class clsInventory

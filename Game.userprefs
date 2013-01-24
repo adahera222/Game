@@ -1,13 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\InventoryManager.js">
-    <Files>
-      <File FileName="Assets\Scripts\GameManager.js" Line="20" Column="1" />
-      <File FileName="Assets\Scripts\Helpers\CellHelper.js" Line="37" Column="1" />
-      <File FileName="Assets\Scripts\InventoryManager.js" Line="53" Column="43" />
-      <File FileName="Assets\Scripts\Items.js" Line="202" Column="102" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

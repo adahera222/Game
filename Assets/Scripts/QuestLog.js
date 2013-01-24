@@ -1,6 +1,4 @@
 #pragma strict
-#pragma downcast
-// pragma downcast just suppresses downcast warnings
 
 import System.Collections.Generic; // import List type
 
@@ -34,7 +32,7 @@ class clsQuest {
 	var status : String = "incomplete"; // quest starts as incomplete, duh
    
 	// constructor: var blah = new clsQuest("Title", arySteps);
-	function clsQuest(newId: int, newTitle: String, aryNewSteps: Array) {
+	function clsQuest(newId: int, newTitle: String, aryNewSteps: List.<clsQuestStep>) {
 		this.questId = newId;
 		this.title = newTitle;
 		for (var newStep: clsQuestStep in aryNewSteps) {
@@ -44,7 +42,7 @@ class clsQuest {
 		// when a quest is assigned, it should immediately be checked for completion, so if
 		// they already killed the necessary monster, etc, bam, its done!
 		this.EvaluateStatus();
-	} // end function clsQuest(newId: int, newTitle: String, aryNewSteps: Array)
+	} // end function clsQuest(newId: int, newTitle: String, aryNewSteps: List.<clsQuestStep>())
    
 	/*
 		retrieve the current step the user is on for this quest
@@ -65,10 +63,6 @@ class clsQuest {
 			for (var condition: Array in conditions) {
 				if (condition[0] == "inventory") {
 					var scrInventory: InventoryManager = GameObject.Find("GameManager").GetComponent(InventoryManager);
-//Debug.Log(condition);
-//Debug.Log(scrInventory);
-//Debug.Log(scrInventory.Inventory);
-//Debug.Log(scrInventory.Inventory.aryInventory);
 					if (!scrInventory.Inventory.aryInventory.Contains(condition[1]))
 					{
 						allConditionsMet = false;
@@ -77,7 +71,7 @@ class clsQuest {
 				} // end if (condition[0] == "inventory")
 				else if (condition[0] == "click" && Input.GetKeyDown(KeyCode.Mouse0)) {
 					// if the clicked item's scrQuestItem.itemName == condition[1], its ok
-					var scrCharacterHandler: CharacterHandler = GameObject.Find("Character(Clone)").GetComponent("CharacterHandler");
+					var scrCharacterHandler: CharacterHandler = GameObject.Find("Character(Clone)").GetComponent(CharacterHandler);
 					var tmpHit: RaycastHit = scrCharacterHandler.hit;
 					var tmpQuestItem: QuestItem = tmpHit.transform.gameObject.GetComponent(QuestItem);
 					// if the correct item was not clicked on, set to false
@@ -137,7 +131,7 @@ class clsQuest {
 		var aryConditions = new Array();
 		var tmpArray = new Array();
 		// first, split each condition up - there has to be at least one
-		var conditions: Array = conditionString.Split(";"[0]);
+		var conditions: String[] = conditionString.Split(";"[0]);
 		
 		// now break each condition into a key/value pair ie: "inventory" & "key"
 		for (var condition: String in conditions) {
@@ -236,7 +230,7 @@ function ShowQuests() {
 	and be triggered so new quests can be assigned.
 */
 function LoadQuests() {
-	var aryLoadSteps = new Array();
+	var aryLoadSteps = new List.<clsQuestStep>();
 	var newStep = new clsQuestStep();
 	
 // ==================================================================== First Quest
@@ -277,7 +271,7 @@ function LoadQuests() {
 
 
 // ==================================================================== 300 Workout
-	aryLoadSteps = new Array();
+	aryLoadSteps = new List.<clsQuestStep>();
 	newStep = new clsQuestStep();
 	newStep.task = "Set 1: 50 pushups.";
 	newStep.condition = "inventory:pushup(50)";

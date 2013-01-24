@@ -1,33 +1,22 @@
 #pragma strict
 
+/* GUI vars
+*/
 //NOTE: UnityGUI skin images can be downloaded from unity3d.com/support/resources/assets/built-in-gui-skin
 var mainSkin: GUISkin; // new GUISkin set from editor
-
-var windowRect : Rect; // plain rect to be used later
-
-var menuWindowX: int;
-var menuWindowY: int;
-var menuWindowWidth: int;
-var menuWindowHeight: int;
-
 var refNecromancerGUIScript: NecromancerGUIScript; // ref to the necro skin script
 
 var windowInventory: Rect = Rect (0, 40, 350, 500); // predefined rect for the inventory
 var windowInventoryContextMenu: Rect = Rect (200, 200, 200, 200); // rect for the context menu
 
-var inventorySlotStyle: GUIStyle; // defines width/height for inv slot
-
-var contextInventoryIndex : int; // inventory  slot the context menu is open for
+var contextInventoryIndex : int; // inventory slot the context menu is open for
 var empty : Texture2D; // empty inventory slot texture
 
 var inventoryContextMenuWindowID : int = 4; // window ID of the inventory context menu window
 
-// inititalize the instructions area
-var ScreenX: int = 0;
-var ScreenY: int = 0;
-var areaWidth: int = 250;
-var areaHeight: int = 500;
+// texture for the TEMP instructions
 var bgInstructions: Texture2D;
+
 var Inventory: clsInventory;
 
 static var showInventory: boolean = false;
@@ -37,24 +26,14 @@ static var showInventoryItemContextMenu: boolean = false;
 /* Initialize stuff at startup 
 */
 function Start () {
-	menuWindowX = Screen.width / 2 - 100;
-	menuWindowY = Screen.height / 2 - 250;
-	menuWindowWidth = 200;
-	menuWindowHeight = 500;
-	windowRect = Rect (menuWindowX, menuWindowY, menuWindowWidth, menuWindowHeight);
 	refNecromancerGUIScript = GetComponent(NecromancerGUIScript);
-	inventorySlotStyle.fixedWidth = 32;
-	inventorySlotStyle.fixedHeight = 32;
 	
-	empty = Resources.Load("EmptyInventorySlot") as Texture2D;
-
 	// instructions window init	
-	ScreenX = Screen.width - 250;
 	bgInstructions = Resources.Load("window") as Texture2D;
-	
-	Inventory = new clsInventory();
-	// preload the inventory array
-	Inventory.InitializeInventory();
+
+	// prep the inventory	
+	empty = Resources.Load("EmptyInventorySlot") as Texture2D;
+	Inventory = new clsInventory(empty);
 } // end function Start ()
 
 function OnGUI() {
@@ -71,10 +50,7 @@ function OnGUI() {
 		GUI.BeginGroup (Rect (0,0,100,100));
 		// End the group we started above. This is very important to remember!
 		GUI.EndGroup ();
-//Debug.Log("showing inventory...");
     } // end if (showInventory)
-//    else
-//Debug.Log("inventory hidden");
     
     if (showInventoryItemContextMenu)
     {
@@ -87,6 +63,10 @@ function OnGUI() {
 	
 } // end function OnGUI()
 
+
+
+/* Build the the inventory window using the GUILayout
+*/
 function DoInventoryWindow(windowID : int) {
 	// use the spike function to add the spikes
 	refNecromancerGUIScript.AddSpikes(windowInventory.width);
@@ -99,7 +79,6 @@ function DoInventoryWindow(windowID : int) {
 	GUILayout.Label ("", "Divider");
 	GUILayout.Space(8);
 	LoadInventory();
-//	GUILayout.Box("Context Menu\nsecond line\nthird line");
     GUILayout.EndVertical();
 	
 	// add a wax seal at the bottom of the window
@@ -108,9 +87,16 @@ function DoInventoryWindow(windowID : int) {
 	GUI.DragWindow (Rect (0,0,10000,100));
 } // end function DoInventoryWindow(windowID : int)
 
+/* Build the contents of the inventory. This is just the rows of inventory cells.
+*/
 function LoadInventory () {
-	var invHorizontalMax = 5;
+	var invHorizontalMax: int = 5;
 	var inventoryTexture : Texture;
+	
+	var inventorySlotStyle: GUIStyle; // defines width/height for inv slot
+	inventorySlotStyle = new GUIStyle();
+	inventorySlotStyle.fixedWidth = 32;
+	inventorySlotStyle.fixedHeight = 32;
 	
 	GUILayout.BeginHorizontal();
 	for (var ind: int = 0;ind<Inventory.maxInventorySize;ind++)
@@ -146,6 +132,8 @@ function LoadInventory () {
 	GUILayout.EndHorizontal();
 } // end function LoadInventory ()
 
+/* Build the context menu window
+*/
 function DoInventoryContextWindow(windowID: int) {
 	// if the index is invalid, just stop
 	if  (contextInventoryIndex == -1 || contextInventoryIndex >= Inventory.maxInventorySize)
@@ -169,9 +157,17 @@ function DoInventoryContextWindow(windowID: int) {
     GUILayout.EndVertical();
 } // end function DoInventoryContextWindow(windowID: int)
 
-/* Place a feaux windows at the top/right with directions on what to actually do with this app
+/* Place a feaux window at the top/right with directions on what to actually do with this app.
+ * This was just an example and a temp window so the controls were obvious. It can be deleted
+ * or replaced by some kind of permanent help?
 */
 function ShowInstructions() {
+	var ScreenX: int;
+	var ScreenY: int = 0;
+	var areaWidth: int = 250;
+	var areaHeight: int = 500;
+	ScreenX = Screen.width - 250;
+
 	// since we are not in a window, we have to change the left/right margins
 	var tmpDivider: GUIStyle = GUIStyle("Divider");
 	tmpDivider.margin.left = 25;
