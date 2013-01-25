@@ -1,8 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Maps\SnakeMap.js">
+    <Files>
+      <File FileName="Assets\Scripts\Maps\SnakeMap.js" Line="24" Column="15" />
+      <File FileName="Assets\Scripts\Helpers\CellHelper.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Helpers\VectorHelper.js" Line="24" Column="1" />
+      <File FileName="Assets\Scripts\Helpers\Direction.js" Line="19" Column="38" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Projects\Game\Assets\Scripts\Maps\SnakeMap.js" line="189" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
