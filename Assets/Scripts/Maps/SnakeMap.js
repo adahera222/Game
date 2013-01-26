@@ -180,233 +180,233 @@ public class SnakeMap implements IMap {
 	/// which wind through the level like a snake. Rooms will be placed randomly along the hallways.
 	/// </summary>
 	private function BuildSnakeMap() {
-		//Create the starting hallway
-		var firstHallway: Hallway = new Hallway(null);
-		
-		//Create eight more hallway's, each one attached to the next
-		var hallway: Hallway = firstHallway;
-		for (var i = 0; i < 8; i++) {
-			hallway = new Hallway(hallway);
-		}
+//		//Create the starting hallway
+//		var firstHallway: Hallway = new Hallway(null);
+//		
+//		//Create eight more hallway's, each one attached to the next
+//		var hallway: Hallway = firstHallway;
+//		for (var i = 0; i < 8; i++) {
+//			hallway = new Hallway(hallway);
+//		}
 	
-//		//determine the dimensions of the array
-//		var rows: int = ROW_MINIMUM + Random.Range(0, ROW_MAXIMUM + 1);
-//		var cols: int = COLUMN_MINIMUM + Random.Range(0, COLUMN_MAXIMUM + 1);
-//		
-//		_map = new GameObject[rows, cols];
-//		
-//		//Create the starting cell, along the bottom of the grid
-//		var currentRow: int = rows - 1;
-//		var currentCol: int = Random.Range (0, cols);
-//		_map[currentRow, currentCol] = CreateCell (CellType.NDeadEnd, true);
-//		
-//		//3 NS Hallways (traverse entire length of map area)
-//		var NSHall1Length: int = rows / 3 - 1;
-//		var NSHall2Length: int = rows / 3 - 1;
-//		var NSHall3Length: int = rows - (NSHall1Length + NSHall2Length + 1);
-//		
-//		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-//		for (var count: int = 1; count <= NSHall1Length; count++) {
-//			currentRow--;
-//			if (currentRow >= 0) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-//			}
-//		}
-//		
-//		//now determine which direction to go and how much space is available
-//		var leftSpace: int = currentCol;
-//		var rightSpace: int = cols - (currentCol + 1);
-//		var hallDirection: int = leftSpace >= rightSpace ? -1 : 1;
-//		var availableHallLength: int = leftSpace >= rightSpace ? leftSpace : rightSpace;
-//		
-//		//place a corner in this hallway
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);
-//		
-//		//draw the first horizontal hallway
-//		var hallLength: int = Random.Range (availableHallLength / 2, availableHallLength);
-//		for (var count2: int = 1; count2 <= hallLength; count2++) {
-//			currentCol += hallDirection;
-//			if ((currentCol > 0) && (currentCol < cols)) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-//			}
-//		}
-//		
-//		//based on the direction, build the corner at the last space
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);
-//		
-//		//draw the second vertical hallway
-//		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-//		for (var count3: int = 1; count3 <= NSHall2Length; count3++) {
-//			currentRow--;
-//			if (currentRow >= 0) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-//			}
-//		}
-//		
-//		//now determine which direction to go and how much space is available
-//		leftSpace = currentCol;
-//		rightSpace = cols - (currentCol + 1);
-//		hallDirection = leftSpace >= rightSpace ? -1 : 1;
-//		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
-//		
-//		//place a corner in this hallway
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
-//		
-//		//draw the second horizontal hallway
-//		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
-//		for (var count4: int = 1; count4 <= hallLength; count4++) {
-//			currentCol += hallDirection;
-//			if ((currentCol > 0) && (currentCol < cols)) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-//			}
-//		}
-//		
-//		//based on the direction, build the corner at the last space
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);	
-//		
-//		//draw the third vertical hallway
-//		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-//		for (var count5: int = 1; count5 <= NSHall3Length; count5++) {
-//			currentRow--;
-//			if (currentRow >= 0) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-//			}
-//		}
-//		
-//		//now determine which direction to go and how much space is available
-//		leftSpace = currentCol;
-//		rightSpace = cols - (currentCol + 1);
-//		hallDirection = leftSpace >= rightSpace ? -1 : 1;
-//		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
-//		
-//		//place a corner in this hallway
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
-//		
-//		//draw the third horizontal hallway
-//		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
-//		for (var count6: int = 1; count6 <= hallLength; count6++) {
-//			currentCol += hallDirection;
-//			if ((currentCol > 0) && (currentCol < cols)) {
-//				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-//			}
-//		}
-//		
-//		//based on the direction, build a deadend
-//		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.EDeadEnd) : CreateCell(CellType.WDeadEnd);		
-//		
-//		//attempt to randomly add rooms to the map
-//		AddRooms();
+		//determine the dimensions of the array
+		var rows: int = ROW_MINIMUM + Random.Range(0, ROW_MAXIMUM + 1);
+		var cols: int = COLUMN_MINIMUM + Random.Range(0, COLUMN_MAXIMUM + 1);
+		
+		_map = new GameObject[rows, cols];
+		
+		//Create the starting cell, along the bottom of the grid
+		var currentRow: int = rows - 1;
+		var currentCol: int = Random.Range (0, cols);
+		_map[currentRow, currentCol] = CreateCell (CellType.NDeadEnd, true);
+		
+		//3 NS Hallways (traverse entire length of map area)
+		var NSHall1Length: int = rows / 3 - 1;
+		var NSHall2Length: int = rows / 3 - 1;
+		var NSHall3Length: int = rows - (NSHall1Length + NSHall2Length + 1);
+		
+		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
+		for (var count: int = 1; count <= NSHall1Length; count++) {
+			currentRow--;
+			if (currentRow >= 0) {
+				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
+			}
+		}
+		
+		//now determine which direction to go and how much space is available
+		var leftSpace: int = currentCol;
+		var rightSpace: int = cols - (currentCol + 1);
+		var hallDirection: int = leftSpace >= rightSpace ? -1 : 1;
+		var availableHallLength: int = leftSpace >= rightSpace ? leftSpace : rightSpace;
+		
+		//place a corner in this hallway
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);
+		
+		//draw the first horizontal hallway
+		var hallLength: int = Random.Range (availableHallLength / 2, availableHallLength);
+		for (var count2: int = 1; count2 <= hallLength; count2++) {
+			currentCol += hallDirection;
+			if ((currentCol > 0) && (currentCol < cols)) {
+				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
+			}
+		}
+		
+		//based on the direction, build the corner at the last space
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);
+		
+		//draw the second vertical hallway
+		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
+		for (var count3: int = 1; count3 <= NSHall2Length; count3++) {
+			currentRow--;
+			if (currentRow >= 0) {
+				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
+			}
+		}
+		
+		//now determine which direction to go and how much space is available
+		leftSpace = currentCol;
+		rightSpace = cols - (currentCol + 1);
+		hallDirection = leftSpace >= rightSpace ? -1 : 1;
+		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
+		
+		//place a corner in this hallway
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
+		
+		//draw the second horizontal hallway
+		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
+		for (var count4: int = 1; count4 <= hallLength; count4++) {
+			currentCol += hallDirection;
+			if ((currentCol > 0) && (currentCol < cols)) {
+				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
+			}
+		}
+		
+		//based on the direction, build the corner at the last space
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);	
+		
+		//draw the third vertical hallway
+		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
+		for (var count5: int = 1; count5 <= NSHall3Length; count5++) {
+			currentRow--;
+			if (currentRow >= 0) {
+				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
+			}
+		}
+		
+		//now determine which direction to go and how much space is available
+		leftSpace = currentCol;
+		rightSpace = cols - (currentCol + 1);
+		hallDirection = leftSpace >= rightSpace ? -1 : 1;
+		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
+		
+		//place a corner in this hallway
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
+		
+		//draw the third horizontal hallway
+		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
+		for (var count6: int = 1; count6 <= hallLength; count6++) {
+			currentCol += hallDirection;
+			if ((currentCol > 0) && (currentCol < cols)) {
+				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
+			}
+		}
+		
+		//based on the direction, build a deadend
+		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.EDeadEnd) : CreateCell(CellType.WDeadEnd);		
+		
+		//attempt to randomly add rooms to the map
+		AddRooms();
 	}
 	
-//	private function AddRooms() {
-//		var numRooms: int = 6;
-//		var countRooms: int = 0;
-//		
-//		var spaces: List.<CellIndex> = new List.<CellIndex>();
-//		
-//		for (var row: int = 0; row < NumRows(); row++) {
-//			for (var col: int = 0; col < NumCols(); col++) {
-//				if (GetCellType(row, col) == CellType.EWHall) {
-//					spaces.Add (new CellIndex(row, col));
-//				}
-//			}
-//		}
-//		
-//		while ((countRooms < numRooms) && (spaces.Count > 0)) {
-//			var roomIndex: int = Random.Range(0, spaces.Count);
-//			var index: CellIndex = spaces[roomIndex];
-//			spaces.RemoveAt(roomIndex);
-//			if (SpaceForRoomToNorth(index.Row, index.Col)) {
-//				BuildRoomToNorth(index.Row, index.Col);
-//				countRooms++;
-//			} else if (SpaceForRoomToSouth(index.Row, index.Col)) {
-//				BuildRoomToSouth(index.Row, index.Col);
-//				countRooms++;
-//			}
-//		}
-//	}
-//	
-//	private function BuildRoomToNorth(row: int, col: int) {
-//		//change the current cell to a T intersection
-//		var script: Cell = _map[row, col].GetComponent.<Cell>();
-//		script.type = CellType.SWall;
-//		
-//		_map[row - 1, col] = CreateCell(CellType.NSHall);
-//		_map[row - 2, col] = CreateCell (CellType.Empty);
-//		_map[row - 2, col - 1] = CreateCell (CellType.SWCorner);
-//		_map[row - 2, col + 1] = CreateCell (CellType.SECorner);
-//		_map[row - 3, col] = CreateCell (CellType.Empty);
-//		_map[row - 3, col - 1] = CreateCell (CellType.WWall);
-//		_map[row - 3, col + 1] = CreateCell (CellType.EWall);
-//		_map[row - 4, col] = CreateCell (CellType.NWall);
-//		_map[row - 4, col - 1] = CreateCell (CellType.NWCorner);
-//		_map[row - 4, col + 1] = CreateCell (CellType.NECorner);
-//	}
-//	
-//	private function BuildRoomToSouth(row: int, col: int) {
-//		//change the current cell to a T intersection
-//		var script: Cell = _map[row, col].GetComponent.<Cell>();
-//		script.type = CellType.NWall;
-//		
-//		_map[row + 1, col] = CreateCell(CellType.NSHall);
-//		_map[row + 2, col] = CreateCell (CellType.Empty);
-//		_map[row + 2, col - 1] = CreateCell (CellType.NWCorner);
-//		_map[row + 2, col + 1] = CreateCell (CellType.NECorner);
-//		_map[row + 3, col] = CreateCell (CellType.Empty);
-//		_map[row + 3, col - 1] = CreateCell (CellType.WWall);
-//		_map[row + 3, col + 1] = CreateCell (CellType.EWall);
-//		_map[row + 4, col] = CreateCell (CellType.SWall);
-//		_map[row + 4, col - 1] = CreateCell (CellType.SWCorner);
-//		_map[row + 4, col + 1] = CreateCell (CellType.SECorner);
-//	}	
-//	
-//	private function SpaceForRoomToNorth(row: int, col: int): boolean {
-//		var blocked: boolean = false;
-//
-//		//make sure we won't go out of bounds to build this room
-//		if ((row - 4 < 0) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
-//			blocked = true;
-//		}
-//		
-//		if (!blocked) {
-//			blocked = GetCellType(row - 1, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 2, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 2, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 2, col + 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 3, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 3, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 3, col + 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 4, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 4, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row - 4, col + 1) != CellType.None ? true : blocked;
-//		}
-//		
-//		return !blocked;
-//	}
-//	
-//	private function SpaceForRoomToSouth(row: int, col: int): boolean {
-//		var blocked: boolean = false;
-//		
-//		//make sure we won't go out of bounds to build this room
-//		if ((row + 4 > NumRows() - 1) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
-//			blocked = true;
-//		}		
-//		
-//		if (!blocked) {
-//			blocked = GetCellType(row + 1, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 2, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 2, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 2, col + 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 3, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 3, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 3, col + 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 4, col) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 4, col - 1) != CellType.None ? true : blocked;
-//			blocked = GetCellType(row + 4, col + 1) != CellType.None ? true : blocked;
-//		}
-//		
-//		return !blocked;
-//	}	
+	private function AddRooms() {
+		var numRooms: int = 6;
+		var countRooms: int = 0;
+		
+		var spaces: List.<CellIndex> = new List.<CellIndex>();
+		
+		for (var row: int = 0; row < NumRows(); row++) {
+			for (var col: int = 0; col < NumCols(); col++) {
+				if (GetCellType(row, col) == CellType.EWHall) {
+					spaces.Add (new CellIndex(row, col));
+				}
+			}
+		}
+		
+		while ((countRooms < numRooms) && (spaces.Count > 0)) {
+			var roomIndex: int = Random.Range(0, spaces.Count);
+			var index: CellIndex = spaces[roomIndex];
+			spaces.RemoveAt(roomIndex);
+			if (SpaceForRoomToNorth(index.Row, index.Col)) {
+				BuildRoomToNorth(index.Row, index.Col);
+				countRooms++;
+			} else if (SpaceForRoomToSouth(index.Row, index.Col)) {
+				BuildRoomToSouth(index.Row, index.Col);
+				countRooms++;
+			}
+		}
+	}
+	
+	private function BuildRoomToNorth(row: int, col: int) {
+		//change the current cell to a T intersection
+		var script: Cell = _map[row, col].GetComponent.<Cell>();
+		script.type = CellType.SWall;
+		
+		_map[row - 1, col] = CreateCell(CellType.NSHall);
+		_map[row - 2, col] = CreateCell (CellType.Empty);
+		_map[row - 2, col - 1] = CreateCell (CellType.SWCorner);
+		_map[row - 2, col + 1] = CreateCell (CellType.SECorner);
+		_map[row - 3, col] = CreateCell (CellType.Empty);
+		_map[row - 3, col - 1] = CreateCell (CellType.WWall);
+		_map[row - 3, col + 1] = CreateCell (CellType.EWall);
+		_map[row - 4, col] = CreateCell (CellType.NWall);
+		_map[row - 4, col - 1] = CreateCell (CellType.NWCorner);
+		_map[row - 4, col + 1] = CreateCell (CellType.NECorner);
+	}
+	
+	private function BuildRoomToSouth(row: int, col: int) {
+		//change the current cell to a T intersection
+		var script: Cell = _map[row, col].GetComponent.<Cell>();
+		script.type = CellType.NWall;
+		
+		_map[row + 1, col] = CreateCell(CellType.NSHall);
+		_map[row + 2, col] = CreateCell (CellType.Empty);
+		_map[row + 2, col - 1] = CreateCell (CellType.NWCorner);
+		_map[row + 2, col + 1] = CreateCell (CellType.NECorner);
+		_map[row + 3, col] = CreateCell (CellType.Empty);
+		_map[row + 3, col - 1] = CreateCell (CellType.WWall);
+		_map[row + 3, col + 1] = CreateCell (CellType.EWall);
+		_map[row + 4, col] = CreateCell (CellType.SWall);
+		_map[row + 4, col - 1] = CreateCell (CellType.SWCorner);
+		_map[row + 4, col + 1] = CreateCell (CellType.SECorner);
+	}	
+	
+	private function SpaceForRoomToNorth(row: int, col: int): boolean {
+		var blocked: boolean = false;
+
+		//make sure we won't go out of bounds to build this room
+		if ((row - 4 < 0) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
+			blocked = true;
+		}
+		
+		if (!blocked) {
+			blocked = GetCellType(row - 1, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 2, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 3, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row - 4, col + 1) != CellType.None ? true : blocked;
+		}
+		
+		return !blocked;
+	}
+	
+	private function SpaceForRoomToSouth(row: int, col: int): boolean {
+		var blocked: boolean = false;
+		
+		//make sure we won't go out of bounds to build this room
+		if ((row + 4 > NumRows() - 1) || (col - 1 < 0) || (col + 1 > NumCols() - 1)) {
+			blocked = true;
+		}		
+		
+		if (!blocked) {
+			blocked = GetCellType(row + 1, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 2, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 3, col + 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col - 1) != CellType.None ? true : blocked;
+			blocked = GetCellType(row + 4, col + 1) != CellType.None ? true : blocked;
+		}
+		
+		return !blocked;
+	}	
 	
 	/// <summary>
 	/// Ensures that the cell at the specified location is a valid cell for the player to occupy
