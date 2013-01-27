@@ -106,21 +106,37 @@ public class CharacterHandler extends MonoBehaviour {
 			if (_navigator.Move(Direction.Forward)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+			} else {
+				if (!audio.isPlaying) {
+					audio.Play();
+				}
 			}
 		} else if(Input.GetKey(KeyCode.E)) {
 			if (_navigator.Move(Direction.Right)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+			} else {
+				if (!audio.isPlaying) {
+					audio.Play();
+				}
 			}
 		} else if(Input.GetKey (KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
 			if (_navigator.Move (Direction.Backward)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+			} else {
+				if (!audio.isPlaying) {
+					audio.Play();
+				}
 			}
 		} else if(Input.GetKey(KeyCode.Q)) {
 			if (_navigator.Move (Direction.Left)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+			} else {
+				if (!audio.isPlaying) {
+					audio.Play();
+				}
 			}
 		} else if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
 			_navigator.Turn (Direction.Left);

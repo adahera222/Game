@@ -1,12 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Maps\SnakeMap.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Character\CharacterHandler.js">
     <Files>
+      <File FileName="Assets\Scripts\Character\CharacterHandler.js" Line="140" Column="5" />
       <File FileName="Assets\Scripts\Maps\SnakeMap.js" Line="56" Column="16" />
-      <File FileName="Assets\Scripts\Maps\HallwayMap.js" Line="35" Column="4" />
+      <File FileName="Assets\Scripts\Maps\HallwayMap.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Helpers\CellHelper.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Renderers\StoneHallRenderer.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Maps\BaseMap.js" Line="6" Column="41" />
+      <File FileName="Assets\Scripts\Maps\BaseMap.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Interfaces\IMap.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Helpers\VectorHelper.js" Line="1" Column="1" />
     </Files>
