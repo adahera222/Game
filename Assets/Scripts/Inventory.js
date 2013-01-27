@@ -18,7 +18,7 @@ class clsInventory {
 	var count: int; // quantity of this item in inventory
 
 	var item = new List.<clsItem>(); // not used. Should replace aryInventory as it gives more info.
-	var aryInventory = new ExtendedArray(); //used to determine if items are in the inventory.
+	var aryInventory = new List.<String>(); //used to determine if items are in the inventory.
 	var aryInventoryImages = new List.<Texture2D>();
 
 	var missingInventoryTexture: Texture2D; // placeholder texture for missing images

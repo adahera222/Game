@@ -72,15 +72,172 @@ class clsRequirements {
 	var otherValue: String; // value to go with other
 }; // end class clsRequirements
 
+function OnGUI () {
+   	if (GUI.Button (new Rect (10,10,75,25), "Generate")) {
+   		CleanUpLevel(); // remove all existing items
+		GameLevel.GenerateNewLevel(); // create a new level
+		LoadItems (); // load new items
+	}		
+}	
 
+function Start () {
+	var XMLNodes = new List.<XMLNode>();
+	var fileStream: String;
+	
+	missingInventoryTexture = UnityEngine.Resources.Load("MissingInventoryTexture") as Texture2D;
+	GameLevel = new Level(new SnakeMap(), new StoneHallRenderer(), characterPrefab);
 
+	// now load all the items from a file
+	if(File.Exists(Application.dataPath + "/DataFiles/Items.xml")) {
+		var itemFile = File.OpenText(Application.dataPath + "/DataFiles/Items.xml");
+		var line = itemFile.ReadLine();
+		var linesRead: int = 0;
+		while(line != null) {
+			linesRead++;
+			// just to safeguard against infinite loop
+			if (linesRead > maxItemLines) {
+				Debug.Log("Hit the max item file line size of " + maxItemLines + ". Increase the variable in Items script to accomodate.");
+				break;
+			}
+				
+			// skip blank lines
+			if (line == "") {
+				line = itemFile.ReadLine();
+				continue;
+			}
+				
+			fileStream += line;
+			// a "[end item]" line indicates the end of the item, so add it
+			if (line == "</item>") {
+				XMLNodes.Add(ParseItem(fileStream));
+				fileStream = "";
+			}
+			
+			line = itemFile.ReadLine();
+		} // end while(line != null) 
+		for(var tmpItem: XMLNode in XMLNodes) {
+			// create a single item
+			var item = new clsItem();
+			item = FillItem(tmpItem);
+			aryItems.Add(item);
+		}
+		
+	} // end if(File.Exists(Application.dataPath + "/DataFiles/Items.txt"))
+	else
+		Debug.Log("Error opening the items file.");
+} // end function Start ()
 
+function FillItem(xmlItem: XMLNode) {
+	var item = new clsItem();
+	// loop thru each attribute in the item
+	for (var attr: XMLNode in xmlItem.GetNodeList("item>0>value")) {
+		if (attr.GetValue("@fieldName") == "itemId") {
+			item.itemId = parseInt(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "name") {
+			item.name = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "description") {
+			item.description = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "equipment") {
+			if (attr.GetValue("_text") == "true")
+				item.equipment = true;
+			else
+				item.equipment = false;
+		}
+		if (attr.GetValue("@fieldName") == "consumable") {
+			if (attr.GetValue("_text") == "true")
+				item.consumable = true;
+			else
+				item.consumable = false;
+		}
+		if (attr.GetValue("@fieldName") == "charges") {
+			item.charges = parseInt(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "chargeTime") {
+			item.chargeTime = parseInt(attr.GetValue("_text"));
+		}
+		
+/*	TODO: not used yet, but have to be filled in eventually	
+		if (attr.GetValue("@fieldName") == "stats") {
+			item.stats = parseInt(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "requirementsToUse") {
+			item.requirements = parseInt(attr.GetValue("_text"));
+		}
+*/		
+		
+		
+		if (attr.GetValue("@fieldName") == "textureInventory") {
+			item.textureInventory = UnityEngine.Resources.Load(attr.GetValue("_text").ToString()) as Texture2D;
+		}
+		if (attr.GetValue("@fieldName") == "textureEquipped") {
+			item.textureEquipped = UnityEngine.Resources.Load(attr.GetValue("_text").ToString()) as Texture2D;
+		}
+		if (attr.GetValue("@fieldName") == "worldObject") {
+			item.worldObject = UnityEngine.Resources.Load("Prefabs/" + attr.GetValue("_text").ToString(), Transform);
+		}
+		if (attr.GetValue("@fieldName") == "material") {
+			item.material = UnityEngine.Resources.Load(attr.GetValue("_text").ToString()) as Material;
+		}
+		
+		if (attr.GetValue("@fieldName") == "x") {
+			item.x = parseFloat(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "y") {
+			item.y = parseFloat(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "z") {
+			item.z = parseFloat(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "questId") {
+			item.questId = parseInt(attr.GetValue("_text"));
+		}
+		if (attr.GetValue("@fieldName") == "action") {
+			item.action = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "itemType") {
+			item.itemType = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "status") {
+			item.status = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "newMaterial") {
+			item.newMaterial = attr.GetValue("_text");
+		}
+		if (attr.GetValue("@fieldName") == "requirement") {
+			item.requirement = attr.GetValue("_text");
+		}
+	}
+	
+	return item;
+}
+
+function ParseItem(itemString: String) {
+	var parser = new XMLParser();
+	var completeItemNode: XMLNode = parser.Parse(itemString);
+	return completeItemNode;
+}
+
+function Contains(itemId: int) {
+	var arrayIndex: int = 0;
+	for(var item: clsItem in aryItems) {
+		if (item.itemId == itemId)
+			return arrayIndex;
+			
+		arrayIndex++;
+	} // end for(var item: clsItem in aryItems)
+	
+	// if it was not found, return -1 to indicate failure
+	return -1;
+} // end function Contains(itemId: int)
+
+/* This function finds all the specified quest items and has GameLevel add them to the scene
+*/
 function LoadItems () {
 	var aryQuestItems = new List.<clsItem>();
-	var scrLevel = Level;
 
-//	scrLevel = GameObject.Find("GameManager").GetComponent(Level);
-	
 	aryQuestItems = GetQuestItems(1);
 	for (var item: clsItem in aryQuestItems) {
 		newQuestItem = Instantiate(item.worldObject, Vector3(item.x, item.y, item.z), Quaternion.identity);
@@ -102,200 +259,6 @@ function LoadItems () {
 	}
 }
 
-/* Right now, this function just finds any quest items in existence and Destroy's em. This should be much
-	more intelligent at some point. Maybe we put all items in a container object and then this function 
-	could just remove anything in it?
-*/
-function CleanUpLevel() {
-	for (var destroyItem: GameObject in GameObject.FindGameObjectsWithTag("quest")) {
-		GameObject.Destroy(destroyItem);
-	}
-} // end function CleanUpLevel()
-
-function OnGUI () {
-   	if (GUI.Button (new Rect (10,10,75,25), "Generate")) {
-   		CleanUpLevel(); // remove all existing items
-		GameLevel.GenerateNewLevel(); // create a new level
-		LoadItems (); // load new items
-	}		
-}	
-
-
-
-function Start () {
-	var tmpValue : String; // holds the line value so we can break it into its parts:key, value, comment
-	var arySplit = new Array(); // holds the resulting array from the Split function
-	var key : String; // holds the key value from the line
-	var itemValue: String; // holds the actual item value from the line
-	var comment: String; // holds the comment value from the line. We don't do anything with it though
-//	var aryItemValues = new Array(); // holds the key/value pairs from the file until we can add them to Items.aryItems
-//	var aryItemValues = new Dictionary.<String, String>();
-	var aryItemValues = new Hashtable();
-	
-	// create a single item
-	var item = new clsItem();
-	
-	missingInventoryTexture = UnityEngine.Resources.Load("MissingInventoryTexture") as Texture2D;
-	GameLevel = new Level(new SnakeMap(), new StoneHallRenderer(), characterPrefab);
-
-	// now load all the items from a file
-	if(File.Exists(Application.dataPath + "/DataFiles/Items.txt")) {
-		var itemFile = File.OpenText(Application.dataPath + "/DataFiles/Items.txt");
-		var line = itemFile.ReadLine();
-		var linesRead: int = 0;
-		while(line != null) {
-			// just to safeguard against infinite loop
-			if (linesRead > maxItemLines) {
-				Debug.Log("Hit the max item file line size of " + maxItemLines + ". Increase the variable in Items script to accomodate.");
-				break;
-			}
-				
-			// skip blank lines
-			if (line == "") {
-				line = itemFile.ReadLine();
-				linesRead++;
-				continue;
-			}
-				
-			// a "[end item]" line indicates the end of the item, so add it
-			if (line == "[end item]") {
-				// 1. make sure the min set of key/values are there
-				if (!aryItemValues.ContainsKey("itemId") || !aryItemValues.ContainsKey("name")) {
-					Debug.Log(aryItemValues["itemId"] + ") incomplete item.");
-				}
-				else {
-					// 2. transfer aryItemValues into item
-					if (aryItemValues["itemId"] != null)
-						item.itemId = parseInt(aryItemValues["itemId"] as String);
-					if (aryItemValues["name"] != null)
-						item.name = aryItemValues["name"] as String;
-					if (aryItemValues["description"] != null)
-						item.description = aryItemValues["description"] as String;
-					if (aryItemValues["equipment"] != null) {
-						if (aryItemValues["equipment"] == "false")
-							item.equipment = false;
-						else
-							item.equipment = true;
-					}
-					if (aryItemValues["consumable"] != null) {
-						if (aryItemValues["consumable"] == "false") 
-							item.consumable = false;
-						else
-							item.consumable = true;
-					}
-					if (aryItemValues["charges"] != null)
-						item.charges = parseInt(aryItemValues["charges"] as String);
-					if (aryItemValues["chargeTime"] != null)
-						item.chargeTime = parseInt(aryItemValues["chargeTime"] as String);
-						
-					// these are all complex item types
-					if (aryItemValues["stats"] != null) {
-						// have to parse the string into a clsStats
-//						item.stats = aryItemValues["stats"];
-					}
-					if (aryItemValues["requirements"] != null) {
-						// have to parse the string into a clsRequirements
-//						item.requirements = aryItemValues["requirements"];
-					}				
-					// just textures, so we can load those from strings ok
-					if (aryItemValues["textureInventory"] != null)
-						item.textureInventory = UnityEngine.Resources.Load(aryItemValues["textureInventory"].ToString()) as Texture2D;
-					if (aryItemValues["textureEquipped"] != null)
-						item.textureEquipped = UnityEngine.Resources.Load(aryItemValues["textureEquipped"].ToString()) as Texture2D;
-						
-					// this  is just a string name of the prefab to instantiate
-					if (aryItemValues["worldObject"] != null) {
-						item.worldObject = UnityEngine.Resources.Load("Prefabs/" + aryItemValues["worldObject"].ToString(), Transform);
-					}
-					if (aryItemValues["material"] != null) {
-						item.material = UnityEngine.Resources.Load(aryItemValues["material"].ToString()) as Material;
-					}
-					if (aryItemValues["x"] != null) {
-						item.x = parseFloat(aryItemValues["x"] as String);
-					}
-					if (aryItemValues["y"] != null) {
-						item.y = parseFloat(aryItemValues["y"] as String);
-					}
-					if (aryItemValues["z"] != null) {
-						item.z = parseFloat(aryItemValues["z"] as String);
-					}
-					
-					// handle all quest values here, just in case they get separated out
-					if (aryItemValues["questId"] != null)
-						item.questId = parseInt(aryItemValues["questId"] as String);
-					if (aryItemValues["action"] != null)
-						item.action = aryItemValues["action"] as String;
-					if (aryItemValues["itemType"] != null)
-						item.itemType = aryItemValues["itemType"] as String;
-					if (aryItemValues["status"] != null)
-						item.status = aryItemValues["status"] as String;
-					if (aryItemValues["newMaterial"] != null)
-						item.newMaterial = aryItemValues["newMaterial"] as String;
-					if (aryItemValues["requirement"] != null)
-						item.requirement = aryItemValues["requirement"] as String;
-					
-					aryItems.Add(item);
-				}
-						
-				// clear the item object for the next item
-				item = new clsItem();
-				aryItemValues = new Hashtable();
-			} // end if (line == "[end item]")
-			else {
-				// parse the line into field:value; //comment
-				tmpValue = line;
-				arySplit = tmpValue.Split(":"[0]);
-				key = arySplit[0] as String;
-				key = key.Trim();
-				
-				tmpValue = arySplit[1] as String;
-				arySplit = tmpValue.Split(";"[0]);
-				itemValue = arySplit[0] as String;
-				itemValue = itemValue.Trim();
-				
-				// IF there is a comment, grab it
-				if (arySplit.Count > 1)
-				{
-					tmpValue = arySplit[1] as String;
-					arySplit = tmpValue.Split("//"[0]);
-					comment = arySplit[1] as String;
-					comment = comment.Trim();
-				}
-				aryItemValues[key] = itemValue;
-			} // end else.  if (line == "[end item]")
-				
-			line = itemFile.ReadLine();
-			linesRead++;
-			key = null;
-			itemValue = null;
-			comment = null;
-		} // end while(line != null) 
-	} // end if(File.Exists(Application.dataPath + "/DataFiles/Items.txt"))
-	else
-		Debug.Log("Error opening the items file.");
-	
-	// now run SetupScene.LoadItems to load the items into the scene
-//	var scrSetupScene: SetupScene;
-//	scrSetupScene = GameObject.Find("GameManager").GetComponent("SetupScene");
-//	scrSetupScene.LoadItems();
-	
-	// TODO: load quest items into the world
-//	LoadItems ();
-} // end function Start ()
-
-function Contains(itemId: int) {
-	var arrayIndex: int = 0;
-	for(var item: clsItem in aryItems) {
-		if (item.itemId == itemId)
-			return arrayIndex;
-			
-		arrayIndex++;
-	} // end for(var item: clsItem in aryItems)
-	
-	// if it was not found, return -1 to indicate failure
-	return -1;
-} // end function Contains(itemId: int)
-
 function GetQuestItems(questId: int) {
 	var aryReturnItems = new List.<clsItem>();
 	
@@ -315,3 +278,14 @@ function GetItemById(itemId: int) {
 	}
 	return null;
 } // end function GetQuestItems(questId: int)
+
+/* Right now, this function just finds any quest items in existence and Destroy's em. This should be much
+	more intelligent at some point. Maybe we put all items in a container object and then this function 
+	could just remove anything in it?
+*/
+function CleanUpLevel() {
+	for (var destroyItem: GameObject in GameObject.FindGameObjectsWithTag("quest")) {
+		GameObject.Destroy(destroyItem);
+	}
+} // end function CleanUpLevel()
+

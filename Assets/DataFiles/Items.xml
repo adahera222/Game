@@ -1,0 +1,107 @@
+<item>
+	<value fieldName="itemId" type="int">1</value>
+	<value fieldName="name" type="string">key1</value>
+	<value fieldName="description" type="string">This key unlocks the portal to level 1!!</value>
+	<value fieldName="questId" type="int">1</value>
+	<value fieldName="textureInventory" type="string">Key1</value>
+	<value fieldName="worldObject" type="string">KeyPrefab</value>
+	<value fieldName="material" type="string">matKey1</value>
+	<value fieldName="x" type="float">-4.5</value>
+	<value fieldName="y" type="float">0.13</value>
+	<value fieldName="z" type="float">-4.5</value>
+	<value fieldName="action" type="string">destroy</value>
+	<value fieldName="itemType" type="string">item</value>
+</item>
+<item>
+	<value fieldName="itemId" type="int">2</value>
+	<value fieldName="name" type="string">key2</value>
+	<value fieldName="description" type="string">This key unlocks the portal to level 2!!</value>
+	<value fieldName="questId" type="int">1</value>
+	<value fieldName="textureInventory" type="string">Key2</value>
+	<value fieldName="worldObject" type="string">KeyPrefab</value>
+	<value fieldName="material" type="string">matKey2</value>
+	<value fieldName="x" type="float">-4.5</value>
+	<value fieldName="y" type="float">0.13</value>
+	<value fieldName="z" type="float">4.5</value>
+	<value fieldName="action" type="string">destroy</value>
+	<value fieldName="itemType" type="string">item</value>
+</item>
+
+<item>
+	<value fieldName="itemId" type="int">3</value>
+	<value fieldName="name" type="string">key3</value>
+	<value fieldName="description" type="string">This key unlocks the portal to level 3!!</value>
+	<value fieldName="textureInventory" type="string">Key3</value>
+	<value fieldName="worldObject" type="string">KeyPrefab</value>
+	<value fieldName="material" type="string">matKey3</value>
+	<value fieldName="x" type="float">-4.5</value>
+	<value fieldName="y" type="float">0.13</value>
+	<value fieldName="z" type="float">0.0</value>
+	<value fieldName="action" type="string">destroy</value>
+	<value fieldName="itemType" type="string">item</value>
+</item>
+
+<item>
+	<value fieldName="itemId" type="int">4</value>
+	<value fieldName="name" type="string">portal1</value>
+	<value fieldName="description" type="string">This portal takes you to level 2</value>
+	<value fieldName="questId" type="int">1</value>
+	<value fieldName="worldObject" type="string">Portal</value>
+	<value fieldName="material" type="string">matPortal1</value>
+	<value fieldName="x" type="float">4.5</value>
+	<value fieldName="y" type="float">0.434</value>
+	<value fieldName="z" type="float">4.5</value>
+	<value fieldName="action" type="string">changeMaterial</value>
+	<value fieldName="itemType" type="string">door</value>
+	<value fieldName="newMaterial" type="string">matPortal1Open</value>
+	<value fieldName="status" type="string">locked</value>
+	<value fieldName="requirement" type="string">key1</value>
+</item>
+
+<item>
+	<value fieldName="itemId" type="int">5</value>
+	<value fieldName="name" type="string">portal2</value>
+	<value fieldName="description" type="string">This portal takes you to level 3</value>
+	<value fieldName="questId" type="int">1</value>
+	<value fieldName="worldObject" type="string">Portal</value>
+	<value fieldName="material" type="string">matPortal2</value>
+	<value fieldName="x" type="float">4.5</value>
+	<value fieldName="y" type="float">0.434</value>
+	<value fieldName="z" type="float">2.0</value>
+	<value fieldName="action" type="string">changeMaterial</value>
+	<value fieldName="itemType" type="string">door</value>
+	<value fieldName="newMaterial" type="string">matPortal2Open</value>
+	<value fieldName="status" type="string">locked</value>
+	<value fieldName="requirement" type="string">key2</value>
+</item>
+
+<item>
+	<value fieldName="itemId" type="int">6</value>
+	<value fieldName="name" type="string">portal3</value>
+	<value fieldName="description" type="string">This portal takes you to level 4</value>
+	<value fieldName="worldObject" type="string">Portal</value>
+	<value fieldName="material" type="string">matPortal3</value>
+	<value fieldName="x" type="float">4.5</value>
+	<value fieldName="y" type="float">0.434</value>
+	<value fieldName="z" type="float">0.0</value>
+	<value fieldName="action" type="string">changeMaterial</value>
+	<value fieldName="itemType" type="string">door</value>
+	<value fieldName="newMaterial" type="string">matPortal3Open</value>
+	<value fieldName="status" type="string">locked</value>
+	<value fieldName="requirement" type="string">key3</value>
+</item>
+
+<item>
+	<value fieldName="itemId" type="int">7</value>
+	<value fieldName="name" type="string">relic</value>
+	<value fieldName="description" type="string">Quest 1's goal. Pick up to complete Quest 1.</value>
+	<value fieldName="textureInventory" type="string">Relic</value>
+	<value fieldName="questId" type="int">1</value>
+	<value fieldName="worldObject" type="string">Relic</value>
+	<value fieldName="x" type="float">0.0</value>
+	<value fieldName="y" type="float">0.0</value>
+	<value fieldName="z" type="float">5.5</value>
+	<value fieldName="action" type="string">destroy</value>
+	<value fieldName="itemType" type="string">item</value>
+	<value fieldName="requirement" type="string">steps:1-4</value>
+</item>

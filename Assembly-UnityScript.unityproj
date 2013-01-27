@@ -67,10 +67,14 @@
      <Compile Include="Assets\Scripts\QuestItem.js" />
      <Compile Include="Assets\Scripts\QuestLog.js" />
      <Compile Include="Assets\Scripts\Renderers\StoneHallRenderer.js" />
+     <Compile Include="Assets\Scripts\XMLParser\XMLNode.js" />
+     <Compile Include="Assets\Scripts\XMLParser\XMLNodeList.js" />
+     <Compile Include="Assets\Scripts\XMLParser\XMLParser.js" />
      <None Include="Assets\DataFiles\Items.txt" />
      <None Include="Assets\Necromancer GUI\Kingthings.txt" />
      <None Include="Assets\Necromancer GUI\Readme.txt" />
      <None Include="Assets\Items.txt" />
+     <None Include="Assets\DataFiles\Items.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
