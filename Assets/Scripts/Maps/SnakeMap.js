@@ -5,11 +5,13 @@ import System.Text;
 
 public class SnakeMap implements IMap {
 	
+	/// The following constants control parameters for the map generation
 	static private var CELL_SCRIPT: String = "CELL";
-	static private var ROW_MINIMUM: int = 10;
-	static private var ROW_MAXIMUM: int = 20;
-	static private var COLUMN_MINIMUM: int = 10;
-	static private var COLUMN_MAXIMUM: int = 20;
+	static private var ROW_MINIMUM: int = 18;
+	static private var ROW_MAXIMUM: int = 30;
+	static private var COLUMN_MINIMUM: int = 18;
+	static private var COLUMN_MAXIMUM: int = 30;
+	static private var MAX_NUMBER_ROOMS: int = 8;
 	
 	private var _navigator: INavigator;
 	private var _map = new GameObject[0,0];
@@ -180,126 +182,209 @@ public class SnakeMap implements IMap {
 	/// which wind through the level like a snake. Rooms will be placed randomly along the hallways.
 	/// </summary>
 	private function BuildSnakeMap() {
-//		//Create the starting hallway
-//		var firstHallway: Hallway = new Hallway(null);
-//		
-//		//Create eight more hallway's, each one attached to the next
-//		var hallway: Hallway = firstHallway;
-//		for (var i = 0; i < 8; i++) {
-//			hallway = new Hallway(hallway);
-//		}
-	
-		//determine the dimensions of the array
-		var rows: int = ROW_MINIMUM + Random.Range(0, ROW_MAXIMUM + 1);
-		var cols: int = COLUMN_MINIMUM + Random.Range(0, COLUMN_MAXIMUM + 1);
+		PrepareNewMap();
 		
-		_map = new GameObject[rows, cols];
+		var cursor: MapCursor = CreateStartingCell();
 		
-		//Create the starting cell, along the bottom of the grid
-		var currentRow: int = rows - 1;
-		var currentCol: int = Random.Range (0, cols);
-		_map[currentRow, currentCol] = CreateCell (CellType.NDeadEnd, true);
+		var NSHallwayLength: int = DetermineNSHallwayLength(3);
 		
-		//3 NS Hallways (traverse entire length of map area)
-		var NSHall1Length: int = rows / 3 - 1;
-		var NSHall2Length: int = rows / 3 - 1;
-		var NSHall3Length: int = rows - (NSHall1Length + NSHall2Length + 1);
+		//Create the first North-South Hallway, and connect it to the first East-West Hallway
+		CreateNSHallway(NSHallwayLength, cursor);
+		var cornerType: CellType = CreateNorthCorner(cursor);
+		var EWHallDirection: Direction = CreateEWHallway(cursor, cornerType);
+		CreateSouthCorner(cursor, EWHallDirection);
+
+		//Create the second North- South Hallway, and connect it to the second East-West Hallway
+		CreateNSHallway(NSHallwayLength, cursor);
+		cornerType = CreateNorthCorner(cursor);
+		EWHallDirection = CreateEWHallway(cursor, cornerType);
+		CreateSouthCorner(cursor, EWHallDirection);
 		
-		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-		for (var count: int = 1; count <= NSHall1Length; count++) {
-			currentRow--;
-			if (currentRow >= 0) {
-				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-			}
-		}
-		
-		//now determine which direction to go and how much space is available
-		var leftSpace: int = currentCol;
-		var rightSpace: int = cols - (currentCol + 1);
-		var hallDirection: int = leftSpace >= rightSpace ? -1 : 1;
-		var availableHallLength: int = leftSpace >= rightSpace ? leftSpace : rightSpace;
-		
-		//place a corner in this hallway
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);
-		
-		//draw the first horizontal hallway
-		var hallLength: int = Random.Range (availableHallLength / 2, availableHallLength);
-		for (var count2: int = 1; count2 <= hallLength; count2++) {
-			currentCol += hallDirection;
-			if ((currentCol > 0) && (currentCol < cols)) {
-				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-			}
-		}
-		
-		//based on the direction, build the corner at the last space
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);
-		
-		//draw the second vertical hallway
-		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-		for (var count3: int = 1; count3 <= NSHall2Length; count3++) {
-			currentRow--;
-			if (currentRow >= 0) {
-				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-			}
-		}
-		
-		//now determine which direction to go and how much space is available
-		leftSpace = currentCol;
-		rightSpace = cols - (currentCol + 1);
-		hallDirection = leftSpace >= rightSpace ? -1 : 1;
-		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
-		
-		//place a corner in this hallway
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
-		
-		//draw the second horizontal hallway
-		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
-		for (var count4: int = 1; count4 <= hallLength; count4++) {
-			currentCol += hallDirection;
-			if ((currentCol > 0) && (currentCol < cols)) {
-				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-			}
-		}
-		
-		//based on the direction, build the corner at the last space
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);	
-		
-		//draw the third vertical hallway
-		//draw the first hallway to the north of the starting spot, don't draw last cell of hallway
-		for (var count5: int = 1; count5 <= NSHall3Length; count5++) {
-			currentRow--;
-			if (currentRow >= 0) {
-				_map[currentRow, currentCol] = CreateCell(CellType.NSHall);
-			}
-		}
-		
-		//now determine which direction to go and how much space is available
-		leftSpace = currentCol;
-		rightSpace = cols - (currentCol + 1);
-		hallDirection = leftSpace >= rightSpace ? -1 : 1;
-		availableHallLength = leftSpace >= rightSpace ? leftSpace : rightSpace;
-		
-		//place a corner in this hallway
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.NECorner) : CreateCell (CellType.NWCorner);		
-		
-		//draw the third horizontal hallway
-		hallLength = Random.Range (availableHallLength / 2, availableHallLength);
-		for (var count6: int = 1; count6 <= hallLength; count6++) {
-			currentCol += hallDirection;
-			if ((currentCol > 0) && (currentCol < cols)) {
-				_map[currentRow, currentCol] = CreateCell(CellType.EWHall);
-			}
-		}
-		
-		//based on the direction, build a deadend
-		_map[currentRow, currentCol] = hallDirection < 0 ? CreateCell(CellType.EDeadEnd) : CreateCell(CellType.WDeadEnd);		
-		
+		//Create the second North- South Hallway, and connect it to the second East-West Hallway
+		CreateNSHallway(NSHallwayLength, cursor);
+		cornerType = CreateNorthCorner(cursor);
+		EWHallDirection = CreateEWHallway(cursor, cornerType);
+		CreateEWDeadEnd(cursor, EWHallDirection);
+
 		//attempt to randomly add rooms to the map
 		AddRooms();
 	}
 	
+	/// <summary>
+	/// Initializes the map array, randomly selecting a number of rows and columns
+	/// </summary>
+	private function PrepareNewMap() {
+		//determine the dimensions of the array
+		var rows: int = ROW_MINIMUM + Random.Range(0, ROW_MAXIMUM + 1);
+		var cols: int = COLUMN_MINIMUM + Random.Range(0, COLUMN_MAXIMUM + 1);
+		
+		//initialize the map array
+		_map = new GameObject[rows, cols];
+	}
+	
+	/// <summary>
+	/// Randomly picks the starting cell, which lies along the bottom of the map (last row)
+	/// </summary>	
+	private function CreateStartingCell(): MapCursor {
+		var currentRow: int = NumRows() - 1;
+		var currentCol: int = Random.Range (0, NumCols());
+		_map[currentRow, currentCol] = CreateCell (CellType.NDeadEnd, true);
+		return new MapCursor(currentRow, currentCol);
+	}
+	
+	/// <summary>
+	/// Returns the length that vertical hallways should be. This is calculated
+	/// By dividing the number of rows in the grid by the number of hallways passed in.
+	/// This isn't the most efficient way to do this, since rows may be wasted, but it will
+	/// work for now.
+	/// </summary>		
+	/// <returns>
+	/// The length that all North-South running hallways should be.
+	/// </returns>	
+	/// <param name='numHallways'>
+	/// The number of vertical hallways intended to be built in the dungeon
+	/// </param>	
+	private function DetermineNSHallwayLength(numHallways: int): int {
+		return NumRows() / numHallways;
+	}
+	
+	/// <summary>
+	/// Builds a horizontal row, starting from position 'cursor' and 
+	/// traveling up the map by 'hallLength'. The 'cursor' CellIndex will
+	/// be updated to the end of the hallway.
+	/// </summary>		
+	/// <param name='hallLength'>
+	/// The number of map cells to draw up the map from 'cursor' position.
+	/// </param>
+	/// <param name='cursor'>
+	/// The position in the map being drawn. This object will be updated as
+	/// the hallway is drawn.
+	/// </param>	
+	private function CreateNSHallway(hallLength: int, cursor: MapCursor) {
+		var row: int = cursor.Row;
+		for (var count: int = 1; count <= hallLength; count++) {
+			row--;
+			if (row >= 0) {
+				cursor.Row = row;
+				_map[cursor.Row, cursor.Col] = CreateCell(CellType.NSHall);
+			}
+		}	
+	}
+	
+	/// <summary>
+	/// Creates an East-West running hallway from the cursor, and heading in a direction
+	/// based on the startingCellType passed in, which must be a NE or NW corner. This method
+	/// will update the cursor as it draws the hallway
+	/// </summary>	
+	/// <returns>
+	/// Returns the direction that the hallway was drawn. This will either be East or West
+	/// </returns>			
+	/// <param name='cursor'>
+	/// The position in the map being drawn.
+	/// </param>
+	/// <param name='startingCellType'>
+	/// All EW Hallways will start from either a North-East hallway, or a North-West Hallway
+	/// </param>	
+	private function CreateEWHallway(cursor: MapCursor, startingCellType: CellType): Direction {
+		var hallDirection: Direction = startingCellType == CellType.NECorner ? Direction.West : Direction.East;
+		var hallLength: int = GetAvailableSpaceFromCursor(cursor, hallDirection);
+		var col: int = cursor.Col;
+		var colModifier: int = hallDirection == Direction.West ? -1 : 1;
+		
+		for (var count: int = 1; count <= hallLength; count++) {
+			col += colModifier;
+			if ((col > 0) && (col < NumCols())) {
+				cursor.Col = col;
+				_map[cursor.Row, cursor.Col] = CreateCell(CellType.EWHall);
+			}
+		}
+		
+		return hallDirection;	
+	}
+	
+	/// <summary>
+	/// Evaluates the cusor position and then builds a corner that connects
+	/// a North-South hallway with an East-West Hallway, turning either east
+	/// or west.
+	/// </summary>
+	/// <returns>
+	/// Returns the celltype that was created
+	/// </returns>		
+	/// <param name='cursor'>
+	/// The position in the map being drawn.
+	/// </param>	
+	private function CreateNorthCorner(cursor: MapCursor): CellType {
+		var westSpace: int = GetAvailableSpaceFromCursor(cursor, Direction.West);
+		var eastSpace: int = GetAvailableSpaceFromCursor(cursor, Direction.East);
+		var availableHallLength: int = Mathf.Max(westSpace, eastSpace);
+		var hallDirection: Direction = westSpace >= eastSpace ? Direction.West : Direction.East;
+		var cellType: CellType = hallDirection == Direction.West ? CellType.NECorner : CellType.NWCorner;
+		_map[cursor.Row, cursor.Col] = CreateCell(cellType);
+		return cellType;
+	}
+	
+	/// <summary>
+	/// Creates a South-West or South-East corner at the specified cursor position, based on the direction
+	/// passed in.
+	/// </summary>	
+	/// <param name='cursor'>
+	/// The position in the map being drawn.
+	/// </param>
+	/// <param name='direction'>
+	/// The direction of the East-West hallway that this corner is being placed on. Valid values are East and West
+	/// </param>	
+	private function CreateSouthCorner(cursor: MapCursor, direction: Direction) {
+		_map[cursor.Row, cursor.Col] = direction == Direction.West ? CreateCell(CellType.SWCorner) : CreateCell(CellType.SECorner);	
+	}
+	
+	/// <summary>
+	/// Create a dead end cap on an East or West running Hallway
+	/// </summary>	
+	/// <param name='cursor'>
+	/// The position in the map being drawn.
+	/// </param>
+	/// <param name='direction'>
+	/// The direction of the East-West hallway that this dead-end is being placed on. Valid values are East and West
+	/// </param>
+	private function CreateEWDeadEnd(cursor: MapCursor, EWHallDirection: Direction) {
+		_map[cursor.Row, cursor.Col] = EWHallDirection == Direction.East ? CreateCell(CellType.EDeadEnd) : CreateCell(CellType.WDeadEnd);
+	}
+	
+	/// <summary>
+	/// Returns the number of spaces to the left or right of the cursor, but not including cursor.
+	/// </summary>
+	/// <returns>
+	/// Returns the number of spaces in the specified direction
+	/// </returns>		
+	/// <param name='cursor'>
+	/// The position in the map to check spaces to the left or right of.
+	/// </param>
+	/// <param name='direction'>
+	/// The direction fromt he cursor to check. Valid values are Left or Right, or East and West
+	/// </param>	
+	private function GetAvailableSpaceFromCursor(cursor: MapCursor, direction: Direction): int {
+		var space: int;
+		switch (direction) {
+		case Direction.Left:
+		case Direction.West:
+			space = cursor.Col;
+			break;
+		case Direction.Right:
+		case Direction.East:
+			space = NumCols() - (cursor.Col + 1);
+			break;
+		default:
+			space = 0;
+			break;
+		}
+		return space;
+	}
+	
+	/// <summary>
+	/// Attempts to add up to MAX_NUMBER_ROOMS to map. Each room will be added
+	/// along EW Hallways
+	/// </summary>
 	private function AddRooms() {
-		var numRooms: int = 6;
 		var countRooms: int = 0;
 		
 		var spaces: List.<CellIndex> = new List.<CellIndex>();
@@ -312,7 +397,7 @@ public class SnakeMap implements IMap {
 			}
 		}
 		
-		while ((countRooms < numRooms) && (spaces.Count > 0)) {
+		while ((countRooms < MAX_NUMBER_ROOMS) && (spaces.Count > 0)) {
 			var roomIndex: int = Random.Range(0, spaces.Count);
 			var index: CellIndex = spaces[roomIndex];
 			spaces.RemoveAt(roomIndex);
@@ -444,9 +529,19 @@ public class SnakeMap implements IMap {
 		
 		if (roomIndex.Flag) {
 			item.position = _map[roomIndex.Row, roomIndex.Col].transform.position;
-			}
+		}
 	}
 	
+	/// <summary>
+	/// Randomly selects a specific type of cell from the map. If it can't find one, the
+	/// FlaggableCellIndex will contain false.
+	/// </summary>
+	/// <returns>
+	/// The index of the map cell. If no cell was found, return value will have flag set to false.
+	/// </returns>
+	/// <param name='type'>
+	/// The type of cell to look for
+	/// </param>	
 	private function GetRandomCell(type: CellType): FlaggableCellIndex {
 		var validCells: List.<CellIndex> = new List.<CellIndex>();
 		
@@ -472,181 +567,21 @@ public class SnakeMap implements IMap {
 		return index;
 	}
 	
-	private class Hallway {
-		static private var LENGTH: int = 7;
-	
-		private var _previous: Hallway;
-		private var _next: Hallway;
-		private var _orientation: Direction;
+	///This Class is used by the SnakeMap generation algorithm to track a drawing cursor. The reason
+	///it is a class is so that it can be passed by reference to different methods, allowing each
+	///method to update the cursor's position in the map grid.
+	private class MapCursor {
+		public var Row: int;
+		public var Col: int;
 		
-		public var WidthIndex: int;
-		public var HeightIndex: int;
-		
-		//Hallways represent a path through the dungeon. Each hallway is connected
-		//to another hallway. Only the first hallway has on previous hallway. The
-		//constructor will place the new hallway on the end of the passed in Hallway,
-		//choosing a random orientation, while trying not to overlap other hallways.
-		public function Hallway(link: Hallway) {
-			//If a link was provided, store it in this hallway's previous link,
-			//and store this hallway in the previous one's next link
-			if (link != null) {
-				SetPrevious(link);
-				link.SetNext(this);
-			}
-			
-			//Determine where this hall exists in relation to the others.
-			//This must occur before the hallway can orient itself
-			DeterminePositionIndex();			
-			
-			//determine the hallway's direction
-			_orientation = PickADirection();
+		public function MapCursor(rowIndex: int, colIndex: int) {
+			this.Row = rowIndex;
+			this.Col = colIndex;
 		}
 		
-		public function SetPrevious(hallway: Hallway) {
-			_previous = hallway;
-		}
-		
-		public function GetPrevious(): Hallway {
-			return _previous;
-		}
-		
-		public function SetNext(hallway: Hallway) {
-			_next = hallway;
-		}
-		
-		public function GetOrientation(): Direction {
-			return _orientation;
-		}
-		
-		//Chooses a random direction for this hallway
-		private function PickADirection(): Direction {
-			var direction: Direction;
-		
-			//If there is no previous link, this hallway can pick any direction it likes, 
-			//as it must be the first hallway in the snake
-			if (_previous == null) {
-				//randomly choose a direction
-				direction = DirectionHelper.GetRandomDirectionFromSubset([Direction.North, Direction.East, Direction.South, Direction.West]);
-			} else {
-				//build a list of all 4 directions
-				var directions: List.<Direction> = new List.<Direction>();
-				directions.Add(Direction.North);
-				directions.Add(Direction.East);
-				directions.Add(Direction.South);
-				directions.Add(Direction.West);
-				
-				//remove the direction opposite of the previous hallway's orientation
-				directions.Remove(DirectionHelper.GetOppositeDirection(_previous.GetOrientation()));
-				
-				//check the remaining directions
-				//for ( choice in directions) {
-				var numDirections = directions.Count;
-				for (var i = numDirections - 1; i >= 0; i--) {
-					//Determine this choices possible end index (where the next hallway would potentially start)
-					var index: CellIndex = GetEndIndex(directions[i]);
-					
-					//now check all children to see if this index intersects with them
-					if (IndexInUse(_previous, index.Row, index.Col)) {
-						directions.RemoveAt(i);
-					}
-				}
-				
-				//randomly select a direction
-				var error: boolean = directions.Count <= 0;
-				if (!error) {
-					var selectedIndex: int = Random.Range(0, directions.Count);
-					direction = directions[selectedIndex];
-				} else {
-					throw new System.Exception("No valid directions for this hallway!");
-				}
-			}
-			
-			return direction;
-		}
-		
-		//The position index refers to the starting cell for this hallway,
-		//which begins in the exact same location as the previous hallway's
-		//last cell.
-		private function DeterminePositionIndex() {
-			if (_previous != null) {
-				
-				var direction: Direction = _previous.GetOrientation();
-				var error: boolean = false;
-				
-				switch (direction) {
-				case Direction.North:
-					WidthIndex = _previous.WidthIndex;
-					HeightIndex = _previous.HeightIndex + 1;
-					break;
-				case Direction.East:
-					WidthIndex = _previous.WidthIndex + 1;
-					HeightIndex = _previous.HeightIndex;
-					break;
-				case Direction.South:
-					WidthIndex = _previous.WidthIndex;
-					HeightIndex = _previous.HeightIndex - 1;
-					break;
-				case Direction.West:
-					WidthIndex = _previous.WidthIndex - 1;
-					HeightIndex = _previous.HeightIndex;
-					break;
-				default:
-					error = true;
-					break;
-				}
-				
-				//check for an error
-				if (error) {
-					throw new System.Exception("Invalid Hallway Direction specified.");
-				}
-			} else {
-				//this is the first hallway in the list of hallways
-				WidthIndex = 0;
-				HeightIndex = 0;
-			}
-		}
-		
-		//Determines what this hallway's ending index might be if it were to extend this
-		//direction. Uses CellIndex, where Row = width, and Col = height
-		private function GetEndIndex(direction: Direction): CellIndex {
-			var index: CellIndex = new CellIndex(0, 0);
-		
-			switch (direction) {
-			case Direction.North:
-				index.Row = _previous.WidthIndex;
-				index.Col = _previous.HeightIndex + 1;
-				break;
-			case Direction.East:
-				index.Row = _previous.WidthIndex + 1;
-				index.Col = _previous.HeightIndex;
-				break;
-			case Direction.South:
-				index.Row = _previous.WidthIndex;
-				index.Col = _previous.HeightIndex - 1;
-				break;
-			case Direction.West:
-				index.Row = _previous.WidthIndex - 1;
-				index.Col = _previous.HeightIndex;
-				break;
-			}		
-			
-			return index;
-		}
-		
-		//recursive function that checks the chain of hallways, all the way to the beginning,
-		//for a matching index
-		private function IndexInUse(hallway: Hallway, width: int, height: int): boolean {
-			if (hallway == null) {
-				return false;
-			}
-			
-			if ((hallway.WidthIndex == width) && (hallway.HeightIndex == height)) {
-				return true;
-			}
-			
-			return IndexInUse(hallway.GetPrevious(), width, height);
-			
-		}
+		public override function ToString(): String {
+			return "{" + this.Row + ", " + this.Col + "}";
+		}	
 	}
 	
 }
