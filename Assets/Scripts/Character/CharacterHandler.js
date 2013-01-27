@@ -29,6 +29,8 @@ public class CharacterHandler extends MonoBehaviour {
 	public var maxLookRight: int = 75; // degrees camera can "look" right (0 + maxLookRight)
 	public var maxLookUp: int = 45; // degrees camera can "look" up (0 + maxLookUp)
 	public var maxLookDown: int = 45; // degrees camera can "look" right (360 - maxLookDown)
+	public var bumpAudio: AudioClip;
+	public var walkAudio: AudioClip;
 	
 	public var hit : RaycastHit; // returns the object clicked on
 	private var scrQuestLog: QuestLog; // script reference
@@ -106,37 +108,33 @@ public class CharacterHandler extends MonoBehaviour {
 			if (_navigator.Move(Direction.Forward)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+				PlayAudioClip(walkAudio);
 			} else {
-				if (!audio.isPlaying) {
-					audio.Play();
-				}
+				PlayAudioClip(bumpAudio);
 			}
 		} else if(Input.GetKey(KeyCode.E)) {
 			if (_navigator.Move(Direction.Right)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+				PlayAudioClip(walkAudio);
 			} else {
-				if (!audio.isPlaying) {
-					audio.Play();
-				}
+				PlayAudioClip(bumpAudio);
 			}
 		} else if(Input.GetKey (KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
 			if (_navigator.Move (Direction.Backward)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+				PlayAudioClip(walkAudio);
 			} else {
-				if (!audio.isPlaying) {
-					audio.Play();
-				}
+				PlayAudioClip(bumpAudio);
 			}
 		} else if(Input.GetKey(KeyCode.Q)) {
 			if (_navigator.Move (Direction.Left)) {
 				targetPosition = _navigator.CurrentPosition();
 				moving = true;
+				PlayAudioClip(walkAudio);
 			} else {
-				if (!audio.isPlaying) {
-					audio.Play();
-				}
+				PlayAudioClip(bumpAudio);
 			}
 		} else if(Input.GetKey (KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
 			_navigator.Turn (Direction.Left);
@@ -146,6 +144,13 @@ public class CharacterHandler extends MonoBehaviour {
 			_navigator.Turn (Direction.Right);
 			targetRotation = Quaternion.LookRotation(_navigator.CurrentFacing(), _navigator.CurrentUpVector());
 			turning = true;
+		}
+	}
+	
+	private function PlayAudioClip(clip: AudioClip) {
+		if ((!audio.isPlaying) && (clip != null)) {
+			audio.clip = clip;
+			audio.Play();
 		}
 	}
 	
