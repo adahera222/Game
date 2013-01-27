@@ -10,5 +10,5 @@ public interface IMap {
 	function GetCellType(row: int, col: int): CellType;
 	function GetStartCellIndex(): CellIndex;
 	function PlaceItemInRandomRoom(item: Transform);
-	function ValidMapCell(row: int, col: int): boolean
+	function ValidMapCell(row: int, col: int): boolean;
 }

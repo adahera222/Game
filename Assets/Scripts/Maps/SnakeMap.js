@@ -3,7 +3,7 @@
 import System.Collections.Generic;
 import System.Text;
 
-public class SnakeMap implements IMap {
+public class SnakeMap extends BaseMap {
 	
 	/// The following constants control parameters for the map generation
 	static private var CELL_SCRIPT: String = "CELL";
@@ -13,101 +13,34 @@ public class SnakeMap implements IMap {
 	static private var COLUMN_MAXIMUM: int = 30;
 	static private var MAX_NUMBER_ROOMS: int = 8;
 	
-	private var _navigator: INavigator;
-	private var _map = new GameObject[0,0];
-	
 	/// <summary>
-	/// Returns this maps Navigator. Navigators are used for movement through the map
+	/// Builds a random map and creates a navigator for it
 	/// </summary>
-	public function Navigator() : INavigator {
-		return _navigator;
-	}
-	
-	/// <summary>
-	/// A 2 dimensional grid that stores gameobjects that make up the map
-	/// </summary>
-	public function Map(row: int, col: int): GameObject {
-		return _map[row, col];
+	public override function Generate() {
+		BuildSnakeMap ();
+		_navigator = new GridNavigator();
+		_navigator.ConnectMap(this);
 	}	
 	
 	/// <summary>
-	/// Returns the number of rows in the map's grid
+	/// Places the item in random room in the dungeon
 	/// </summary>
-	public function NumRows(): int {
-		return _map.GetLength(0);
+	/// <param name='item'>
+	/// Item to be placed
+	/// </param>
+	public override function PlaceItemInRandomRoom(item: Transform) {
+		//First look for an empty cell, which will be in a room, otherwise stick in a east west hallway
+		var roomIndex: FlaggableCellIndex = GetRandomCell(CellType.Empty);
+
+		if (!roomIndex.Flag) {
+			roomIndex = GetRandomCell(CellType.EWHall);
+			
+		}
+		
+		if (roomIndex.Flag) {
+			item.position = _map[roomIndex.Row, roomIndex.Col].transform.position;
+		}
 	}	
-	
-	// REturns the number of columns in the map's grid
-	function NumCols(): int {
-		return _map.GetLength(1);
-	}		
-	
-	/// <summary>
-	/// Returns the type of the cell requested by row and column in the map's grid
-	/// </summary>
-	/// <returns>
-	/// The type of the cell at the grid index requested
-	/// </returns>
-	/// <param name='row'>
-	/// The row index of the requested cell
-	/// </param>
-	/// <param name='col'>
-	/// The column index of the requested cell
-	/// </param>
-	public function GetCellType(row: int, col: int): CellType {
-		var typeOfCell: CellType = CellType.None;
-		
-		if (ValidMapCell(row, col)) {
-			var script: Cell = _map[row, col].GetComponent.<Cell>();
-			if (script != null) {
-				typeOfCell = script.type;
-			}
-		}
-		
-		return typeOfCell;
-	}
-	
-	/// <summary>
-	/// Returns the starting cell in the dungeon.
-	/// This is used to determine where the player character should begin.
-	/// </summary>
-	/// <returns>
-	/// A struct indicating the row and column index of the starting cell. Default is 0, 0
-	/// </returns>
-	public function GetStartCellIndex(): CellIndex {
-		var index: CellIndex = new CellIndex(0, 0);
-		
-		for (var row: int = 0; row < NumRows(); row++) {
-			for (var col: int = 0; col < NumCols(); col++) {
-				if (_map[row,col] != null) {
-					var script: Cell = _map[row,col].GetComponent.<Cell>();
-					if (script.start) {
-						index.Row = row;
-						index.Col = col;
-					}
-				}
-			}
-		}
-		
-		return index;
-	}
-	
-	/// <summary>
-	/// Destroys all current cell game objects and resets the map array to be 0,0 size
-	/// </summary>
-	public function Reset() {
-		for (var row: int = 0; row < NumRows(); row++) {
-			for (var col: int = 0; col < NumCols(); col++) {
-				if (_map[row,col] != null) {
-					GameObject.Destroy(_map[row,col]);
-					_map[row,col] = null;
-				}
-			}
-		}
-		
-		//reset the length of the map array
-		_map = new GameObject[0,0];
-	}
 	
 	/// <summary>
 	/// Creates the cell's game object and attaches the Cell script to it.
@@ -137,44 +70,6 @@ public class SnakeMap implements IMap {
 	/// </param>
 	private function CreateCell(type: CellType): GameObject {
 		return CreateCell(type, false);
-	}
-	
-	/// <summary>
-	/// Returns a <see cref="System.String"/> that represents the current <see cref="SnakeMap"/>.
-	/// </summary>
-	/// <returns>
-	/// A <see cref="System.String"/> that represents the current <see cref="SnakeMap"/>.
-	/// </returns>
-	public override function ToString(): String {
-		var text: StringBuilder = new StringBuilder();
-		
-		text.AppendFormat("Rows: {0}", NumRows()).AppendLine();
-		text.AppendFormat("Cols: {0}", NumCols()).AppendLine();
-		
-		for (var row: int = 0; row < NumRows(); row++) {
-			text.Append("[");
-			for (var col: int = 0; col < NumCols(); col++) {
-				var cell: GameObject = _map[row,col];
-				var cellType: CellType = CellType.None;
-				if (cell != null) {
-					var script: Cell = cell.GetComponent.<Cell>();
-					cellType = script.type;
-				};
-			    text.AppendFormat(" {0,4} ", cellType);
-			}
-			text.Append("]").AppendLine();
-		}
-		
-		return text.ToString();
-	}
-	
-	/// <summary>
-	/// Builds a random map and creates a navigator for it
-	/// </summary>
-	public function Generate() {
-		BuildSnakeMap ();
-		_navigator = new GridNavigator();
-		_navigator.ConnectMap(this);
 	}
 	
 	/// <summary>
@@ -411,6 +306,15 @@ public class SnakeMap implements IMap {
 		}
 	}
 	
+	/// <summary>
+	/// Builds a room of a set size to the north of the specified hallway space
+	/// </summary>
+	/// <param name='row'>
+	/// The row index of the map cell that the room will be attached to
+	/// </param>
+	/// <param name='col'>
+	/// The column index of the map cell that the room will be attached to
+	/// </param>	
 	private function BuildRoomToNorth(row: int, col: int) {
 		//change the current cell to a T intersection
 		var script: Cell = _map[row, col].GetComponent.<Cell>();
@@ -428,6 +332,15 @@ public class SnakeMap implements IMap {
 		_map[row - 4, col + 1] = CreateCell (CellType.NECorner);
 	}
 	
+	/// <summary>
+	/// Builds a room of a set size to the south of the specified hallway space
+	/// </summary>
+	/// <param name='row'>
+	/// The row index of the map cell that the room will be attached to
+	/// </param>
+	/// <param name='col'>
+	/// The column index of the map cell that the room will be attached to
+	/// </param>	
 	private function BuildRoomToSouth(row: int, col: int) {
 		//change the current cell to a T intersection
 		var script: Cell = _map[row, col].GetComponent.<Cell>();
@@ -445,6 +358,18 @@ public class SnakeMap implements IMap {
 		_map[row + 4, col + 1] = CreateCell (CellType.SECorner);
 	}	
 	
+	/// <summary>
+	/// Checks to see if there is enough space for a room to the north of the specified hallway space
+	/// </summary>
+	/// <returns>
+	/// If there is enough space, returns true
+	/// </returns>
+	/// <param name='row'>
+	/// The row index of the map cell that the room will be attached to
+	/// </param>
+	/// <param name='col'>
+	/// The column index of the map cell that the room will be attached to
+	/// </param>
 	private function SpaceForRoomToNorth(row: int, col: int): boolean {
 		var blocked: boolean = false;
 
@@ -469,6 +394,18 @@ public class SnakeMap implements IMap {
 		return !blocked;
 	}
 	
+	/// <summary>
+	/// Checks to see if there is enough space for a room to the south of the specified hallway space
+	/// </summary>
+	/// <returns>
+	/// If there is enough space, returns true
+	/// </returns>
+	/// <param name='row'>
+	/// The row index of the map cell that the room will be attached to
+	/// </param>
+	/// <param name='col'>
+	/// The column index of the map cell that the room will be attached to
+	/// </param>	
 	private function SpaceForRoomToSouth(row: int, col: int): boolean {
 		var blocked: boolean = false;
 		
@@ -491,45 +428,6 @@ public class SnakeMap implements IMap {
 		}
 		
 		return !blocked;
-	}	
-	
-	/// <summary>
-	/// Ensures that the cell at the specified location is a valid cell for the player to occupy
-	/// </summary>
-	/// <returns>
-	/// if the specified cell is a valid locatio for the player to occupy it returns <c>true</c>, else it returns <c>false</c>;
-	/// </returns>
-	/// <param name='row'>
-	/// The row index of the map grid to check
-	/// </param>
-	/// <param name='col'>
-	/// The col index of the map grid to check
-	/// </param>
-	public function ValidMapCell(row: int, col: int): boolean {
-		return (_map != null) &&
-			(row >= 0) && (row < NumRows()) &&
-			(col >= 0) && (col < NumCols()) &&
-			_map[row, col] != null;
-	}
-	
-	/// <summary>
-	/// Places the item in random room in the dungeon
-	/// </summary>
-	/// <param name='item'>
-	/// Item to be placed
-	/// </param>
-	public function PlaceItemInRandomRoom(item: Transform) {
-		//First look for an empty cell, which will be in a room, otherwise stick in a east west hallway
-		var roomIndex: FlaggableCellIndex = GetRandomCell(CellType.Empty);
-
-		if (!roomIndex.Flag) {
-			roomIndex = GetRandomCell(CellType.EWHall);
-			
-		}
-		
-		if (roomIndex.Flag) {
-			item.position = _map[roomIndex.Row, roomIndex.Col].transform.position;
-		}
 	}
 	
 	/// <summary>

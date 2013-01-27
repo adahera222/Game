@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\InventoryManager.js" />
      <Compile Include="Assets\Scripts\Items.js" />
      <Compile Include="Assets\Scripts\Level.js" />
+     <Compile Include="Assets\Scripts\Maps\BaseMap.js" />
      <Compile Include="Assets\Scripts\Maps\HallwayMap.js" />
      <Compile Include="Assets\Scripts\Maps\SnakeMap.js" />
      <Compile Include="Assets\Scripts\Navigators\GridNavigator.js" />
