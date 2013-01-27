@@ -13,6 +13,8 @@ public class SnakeMap extends BaseMap {
 	static private var COLUMN_MAXIMUM: int = 30;
 	static private var MAX_NUMBER_ROOMS: int = 8;
 	
+	private var mapItems: IList.<MapItem> = new List.<MapItem>();
+	
 	/// <summary>
 	/// Builds a random map and creates a navigator for it
 	/// </summary>
@@ -30,17 +32,60 @@ public class SnakeMap extends BaseMap {
 	/// </param>
 	public override function PlaceItemInRandomRoom(item: Transform) {
 		//First look for an empty cell, which will be in a room, otherwise stick in a east west hallway
-		var roomIndex: FlaggableCellIndex = GetRandomCell(CellType.Empty);
-
-		if (!roomIndex.Flag) {
-			roomIndex = GetRandomCell(CellType.EWHall);
-			
+		
+		var roomsToSearch = [CellType.Empty, CellType.EWall, CellType.WWall, CellType.SWall, CellType.NWall];
+		
+		var count: int = 0;
+		
+		do {
+		count++;
+		var roomIndex: FlaggableCellIndex = GetRandomCell(roomsToSearch);
+		var available: boolean = IsCellAvailable(roomIndex.Row, roomIndex.Col);
 		}
+		while ((!available) && (count < 20));
 		
 		if (roomIndex.Flag) {
+			var cellIndex: CellIndex = new CellIndex(roomIndex.Row, roomIndex.Col);
+			mapItems.Add(new MapItem(cellIndex, item));
 			item.position = _map[roomIndex.Row, roomIndex.Col].transform.position;
 		}
-	}	
+	}
+	
+	/// <summary>
+	/// Clears the items from the mapItems, before calling the inherited reset method.
+	/// </summary>
+	public override function Reset() {
+		for (var i: int = 0; i < mapItems.Count; i++) {
+			GameObject.Destroy(mapItems[i].Item.gameObject);
+		}
+		mapItems.Clear();
+		super();
+	}
+	
+	/// <summary>
+	/// Checks to see if a cell in the map is occupied by an item.
+	/// </summary>
+	/// <returns>
+	/// Returns true if the cell specified is unoccupied.
+	/// </returns>
+	/// <param name='row'>
+	/// The row index of the cell to check
+	/// </param>
+	/// <param name='col'>
+	/// The column index of the cell to check
+	/// </param>	
+	private function IsCellAvailable(row: int, col: int): boolean {
+		var available: boolean = true;
+		
+		for (var i: int = 0; i < mapItems.Count; i++) {
+			if ((mapItems[i].Index.Row == row) && (mapItems[i].Index.Col == col)) {
+				available = false;
+				break;
+			}
+		}
+		
+		return available;
+	}
 	
 	/// <summary>
 	/// Creates the cell's game object and attaches the Cell script to it.
@@ -440,15 +485,17 @@ public class SnakeMap extends BaseMap {
 	/// <param name='type'>
 	/// The type of cell to look for
 	/// </param>	
-	private function GetRandomCell(type: CellType): FlaggableCellIndex {
+	private function GetRandomCell(cellTypes: CellType[]): FlaggableCellIndex {
 		var validCells: List.<CellIndex> = new List.<CellIndex>();
 		
-		var index = new FlaggableCellIndex(-1, -1, false);
+		var cell = new FlaggableCellIndex(-1, -1, false);
 				
 		for (var row: int = 0; row < NumRows(); row++) {
 			for (var col: int = 0; col < NumCols(); col++) {
 				if (ValidMapCell(row, col)) {
-					if (GetCellType(row, col) == type) {
+					var type: CellType = GetCellType(row, col);
+					var index = System.Array.IndexOf(cellTypes, type);
+					if ( index > -1 ) {
 						validCells.Add (new CellIndex(row, col));
 					}
 				}
@@ -457,12 +504,12 @@ public class SnakeMap extends BaseMap {
 		
 		if (validCells.Count > 0) {
 			var randomIndex: int = Random.Range (0, validCells.Count);
-			index.Row = validCells[randomIndex].Row;
-			index.Col = validCells[randomIndex].Col;
-			index.Flag = true;
+			cell.Row = validCells[randomIndex].Row;
+			cell.Col = validCells[randomIndex].Col;
+			cell.Flag = true;
 		}
 		
-		return index;
+		return cell;
 	}
 	
 	///This Class is used by the SnakeMap generation algorithm to track a drawing cursor. The reason
@@ -480,6 +527,17 @@ public class SnakeMap extends BaseMap {
 		public override function ToString(): String {
 			return "{" + this.Row + ", " + this.Col + "}";
 		}	
+	}
+	
+	///This class is used to track Items placed in the map
+	private class MapItem {
+		public var Index: CellIndex;
+		public var Item: Transform;
+		
+		public function MapItem(spot: CellIndex, thing: Transform) {
+			Index = spot;
+			Item = thing;
+		}
 	}
 	
 }
