@@ -5,32 +5,25 @@
 //NOTE: UnityGUI skin images can be downloaded from unity3d.com/support/resources/assets/built-in-gui-skin
 var mainSkin: GUISkin; // new GUISkin set from editor
 var refNecromancerGUIScript: NecromancerGUIScript; // ref to the necro skin script
+var empty : Texture2D; // empty inventory slot texture
 
 var windowInventory: Rect = Rect (0, 40, 350, 500); // predefined rect for the inventory
 var windowInventoryContextMenu: Rect = Rect (200, 200, 200, 200); // rect for the context menu
 
 var contextInventoryIndex : int; // inventory slot the context menu is open for
-var empty : Texture2D; // empty inventory slot texture
 
 var inventoryContextMenuWindowID : int = 4; // window ID of the inventory context menu window
-
-// texture for the TEMP instructions
-var bgInstructions: Texture2D;
 
 var Inventory: clsInventory;
 
 static var showInventory: boolean = false;
 static var showInventoryItemContextMenu: boolean = false;
 
-
 /* Initialize stuff at startup 
 */
 function Start () {
 	refNecromancerGUIScript = GetComponent(NecromancerGUIScript);
 	
-	// instructions window init	
-	bgInstructions = Resources.Load("window") as Texture2D;
-
 	// prep the inventory	
 	empty = Resources.Load("EmptyInventorySlot") as Texture2D;
 	Inventory = new clsInventory(empty);
@@ -38,8 +31,6 @@ function Start () {
 
 function OnGUI() {
 	GUI.skin = mainSkin;
-	
-//	ShowInstructions();
 	
     if (showInventory)
     {
@@ -62,8 +53,6 @@ function OnGUI() {
 	} // end if (showInventoryItemContextMenu)
 	
 } // end function OnGUI()
-
-
 
 /* Build the the inventory window using the GUILayout
 */
@@ -156,35 +145,4 @@ function DoInventoryContextWindow(windowID: int) {
 	}
     GUILayout.EndVertical();
 } // end function DoInventoryContextWindow(windowID: int)
-
-/* Place a feaux window at the top/right with directions on what to actually do with this app.
- * This was just an example and a temp window so the controls were obvious. It can be deleted
- * or replaced by some kind of permanent help?
-*/
-function ShowInstructions() {
-	var ScreenX: int;
-	var ScreenY: int = 0;
-	var areaWidth: int = 250;
-	var areaHeight: int = 500;
-	ScreenX = Screen.width - 250;
-
-	// since we are not in a window, we have to change the left/right margins
-	var tmpDivider: GUIStyle = GUIStyle("Divider");
-	tmpDivider.margin.left = 25;
-	tmpDivider.margin.right = 25;
-	var tmpTextAreaStyle: GUIStyle = GUIStyle("TextArea");
-	tmpTextAreaStyle.margin.left = 25;
-	tmpTextAreaStyle.margin.right = 25;
-
-	GUILayout.BeginArea(Rect (ScreenX, ScreenY, areaWidth, areaHeight), bgInstructions);
-	GUILayout.BeginVertical();
-	GUILayout.Space(35);
-	GUILayout.Label("Instructions");	
-	GUILayout.Label("", tmpDivider);
-	GUILayout.TextArea("Click 'I' to open the inventory", tmpTextAreaStyle);
-	GUILayout.TextArea("Click an object to add it to the inventory", tmpTextAreaStyle);
-	GUILayout.TextArea("Right-click an object in the inventory and choose Delete to remove it", tmpTextAreaStyle);
-	GUILayout.EndVertical();
-	GUILayout.EndArea();
-} // end function ShowInstructions()
 

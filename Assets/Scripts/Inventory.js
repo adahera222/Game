@@ -1,22 +1,7 @@
 #pragma strict
 #pragma downcast
 
-class ExtendedArray extends Array{
-	// move to a helper function file or extend Array ================================================================
-	function Contains(needle: String) {
-		for (var arrayValue: String in this) {
-			if (arrayValue == needle)
-				return true;
-		}
-		
-		return false;
-	} // end function Contains(needle: String)
-}
-
-
 class clsInventory {
-	var count: int; // quantity of this item in inventory
-
 	var item = new List.<clsItem>(); // not used. Should replace aryInventory as it gives more info.
 	var aryInventory = new List.<String>(); //used to determine if items are in the inventory.
 	var aryInventoryImages = new List.<Texture2D>();

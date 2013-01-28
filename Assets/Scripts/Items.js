@@ -107,7 +107,7 @@ function Start () {
 			}
 				
 			fileStream += line;
-			// a "[end item]" line indicates the end of the item, so add it
+
 			if (line == "</item>") {
 				XMLNodes.Add(ParseItem(fileStream));
 				fileStream = "";
@@ -115,6 +115,7 @@ function Start () {
 			
 			line = itemFile.ReadLine();
 		} // end while(line != null) 
+		
 		for(var tmpItem: XMLNode in XMLNodes) {
 			// create a single item
 			var item = new clsItem();
